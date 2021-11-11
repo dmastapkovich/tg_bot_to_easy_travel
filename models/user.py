@@ -1,4 +1,14 @@
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.orm import declarative_base, Session
 from aiogram.types import Message
+
+
+from config import DATABASE_URL
+
+
+Base = declarative_base()
+engine = create_engine(DATABASE_URL)
+session = Session(bind=engine)
 
 COUNTRY_CURR = {
     'en': 'USD',
@@ -10,79 +20,76 @@ LOCALES = [
 ]
 
 
-class User:
+class User(Base):
 
-    _history: list = None
-    _next_hop: str = None
-    _bot_request: str = None
-    _dialog: dict['str', str | int] = {}
+    __tablename__ = 'users'
+
+    id_user = Column(Integer, primary_key=True)
+    username = Column(String)
+    fullname = Column(String)
+    i18n_code = Column(String)
+    currency = Column(String)
+    route = Column(String)
+    request: Column(String)
+    # _history: list = None
+    dialog: dict['str', str | int] = {}
+
     __ROUTING = ('ENTER_CITY', 'ENTER_PRICE', 'ENTER_RADIUS', 'ENTER_COUNT_HOTEL',
                  'SELECT_PHOTO', 'ENTER_COUNT_PHOTO', 'CHECK_REQUEST')
-    __BOT_REQUESTS = ('lowprice', 'highprice', 'bestdeal')
 
-    def __init__(self, username: str, fullname: str, chat_id: int, language_code: str) -> None:
-        self._username = username
-        self._fullname = fullname
-        self._user_id = chat_id
-
-        # Settings user
-        self._language = language_code
-        self._currency = COUNTRY_CURR[self.language] if COUNTRY_CURR.get(
-            self.language) else COUNTRY_CURR['en']
-
-    @property
-    def history(self) -> list:
-        return self._history
-
-    @property
-    def language(self):
-        return self.language
-
-    @language.setter
-    def set_language(self, value):
-        if value not in LOCALES:
-            value = 'en'
-        self.language = value
-
-    @property
-    def currency(self):
-        return self._currency
-
-    @currency.setter
-    def set_currency(self, value):
-        if not COUNTRY_CURR.get(value):
-            value = COUNTRY_CURR['en']
-        self.language = value
-
-    def change_settings(self, language_code, currency_code):
-        self.language = language_code
-        self.currency = currency_code
+    __REQUESTS = ('/lowprice', '/highprice', '/bestdeal')
 
     @property
     def next_hop(self):
-        return self._next_hop
+        return self.route
 
     @next_hop.setter
-    def set_next_hop(self, route):
-        if route not in self.__ROUTING:
-            route = None
-        self._next_hop = route
+    def next_hop(self, value):
+        if value not in self.__ROUTING:
+            value = ''
+        self.route = value
+        User.commit_user(self)
 
     @property
     def bot_request(self):
-        return self._bot_request
+        return self.request
 
     @bot_request.setter
-    def set_bot_request(self, value):
-        if value not in self.__BOT_REQUESTS:
-            value = None
-        self._bot_request = value
+    def bot_request(self, value):
+        if value not in self.__REQUESTS:
+            value = ''
+        self.request = value
+        User.commit_user(self)
 
     @staticmethod
     def from_message(messge: Message):
-        return User(
+        user = User(
             username=messge.from_user.username,
             fullname=messge.from_user.full_name,
-            chat_id=messge.from_user.id,
-            l18n_code=messge.from_user.language_code
+            id_user=messge.from_user.id,
+            i18n_code=messge.from_user.language_code,
+            currency=COUNTRY_CURR[messge.from_user.language_code],
+            route=''
         )
+
+        result = User.user_from_db(user)
+
+        if len(result) == 0:
+            User.commit_user(user)
+        else:
+            user = result[0]
+
+        return user
+
+    @staticmethod
+    def user_from_db(user) -> list:
+        return session.query(User).filter(User.id_user == user.id_user).all()
+
+    @staticmethod
+    def commit_user(user):
+        session.add(user)
+        session.commit()
+
+    def __repr__(self):
+        return "<User(chat_id='%s', fullname='%s', username='%s')>" % (
+            self.id_user, self.fullname, self.username)
