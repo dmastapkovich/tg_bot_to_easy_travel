@@ -4,11 +4,11 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from loguru import logger
 
 import config
-from utils.botlogging import setup as logging_setup
-from utils.botl_i18n import setup as i18n_setup
+import utils.botlogging as logging
+import utils.botl_i18n as i18n
+import models.database as database
 
-
-bot = Bot(config.TOKEN)
+bot = Bot(config.TELEGRAN_TOKEN)
 dp = Dispatcher(bot)
 dp.middleware.setup(LoggingMiddleware())
 execut = Executor(dp)
@@ -22,14 +22,13 @@ async def shutdown(dispatcher: Dispatcher):
     logger.warning('Shutting down..')
 
     await dispatcher.bot.delete_webhook()
-    await dispatcher.storage.close()
-    await dispatcher.storage.wait_closed()
 
 
 def setup():
-    logging_setup()
+    logging.setup()
     logger.info("Setup basic settings")
-    i18n_setup()
+    i18n.setup()
+    database.setup()
     execut.on_startup(startup, webhook=True, polling=False)
     execut.on_shutdown(shutdown)
     logger.info("Setup handlers bot_TooEasyTravel")

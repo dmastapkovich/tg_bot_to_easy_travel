@@ -47,3 +47,8 @@ logs/
 *.bak
 # temporarily 
 locales/
+
+*.db
+
+test_dev.py
+my_source

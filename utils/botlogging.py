@@ -4,8 +4,9 @@ from typing import ParamSpec, TypeVar, Callable
 from aiogram import types
 from loguru import logger
 
-
 from config import LOGGER_FILE
+
+
 # Type hinting
 P = ParamSpec('P')
 T = TypeVar('T')
@@ -33,8 +34,7 @@ def log_handler(func: Callable[P, T]) -> Callable[P, T]:
             return result
         except Exception as error:
 
-            if isinstance(args[0], M):
-                logger.error(
-                    f"[{error.__class__.__name__}] Function [{func.__name__}] event. Enter value: {info}.")
+            logger.error(f"[{error.__class__.__name__}] Function [{func.__name__}] event. Enter value: {error}.")
+
 
     return wrapper
