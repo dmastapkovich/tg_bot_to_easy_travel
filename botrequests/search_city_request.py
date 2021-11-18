@@ -14,8 +14,8 @@ from utils.hotels_requests import search_locations
 async def enter_city(message: types.Message):
 
     user = User.from_message(message)
-    citys = search_locations(
-        {'city': message.text,
+    citys = await search_locations(
+        {'query': message.text,
          'locale': user.locale,
          'currency': user.currency}
     )
@@ -31,7 +31,7 @@ async def enter_city(message: types.Message):
         user.set_item_dialog('city', citys.values()[0])
         await switch_bot_request(message, user)
 
-    markup = get_markup_city(citys)
+    markup = await get_markup_city(citys)
     user.set_item_dialog('city', json.dumps(citys))
     await message.answer("Выберете город из списка:", reply_markup=markup)
     user.next_hop = 'SELECT_CITY'
@@ -51,7 +51,7 @@ async def select_city(call: types.CallbackQuery):
     await call.message.delete()
 
 
-def get_markup_city(citys: dict) -> types.InlineKeyboardMarkup:
+async def get_markup_city(citys: dict) -> types.InlineKeyboardMarkup:
 
     markup = types.InlineKeyboardMarkup()
     for id_city, name_city in citys.items():

@@ -20,33 +20,16 @@ async def command_search_hotel(message: types.Message):
     user.next_hop = 'ENTER_CITY'
 
 
-# @dp.message_handler(lambda message: User.from_message(message).next_hop == 'ENTER_CITY')
-# @log_handler
-# async def enter_city(message: types.Message):
-
-#     user = User.from_message(message)
-#     user.set_item_dialog('city', message.text)
-
-#     match user.bot_request:
-#         case '/lowprice' | '/highprice':
-#             user.next_hop = 'ENTER_COUNT_HOTEL'
-#             await message.answer(f'Введите количество выводимых отелей(до {SZ_COUNT_HOTEL}):')
-
-#         case '/bestdeal':
-#             user.next_hop = 'ENTER_PRICE'
-#             await message.answer('Введите диапозон цен через - ')
-
-
 @dp.message_handler(lambda message: User.from_message(message).next_hop == 'ENTER_COUNT_HOTEL')
 @log_handler
 async def enter_count_hotel(message: types.Message):
 
     if not message.text.isdigit():
-        await message.answer(f'({message.text}) - не число.\nПопробуйте еще раз.')
-        return
+        return await message.answer(f'({message.text}) - не число.\nПопробуйте еще раз.')
+        
 
     if int(message.text) > SZ_COUNT_HOTEL:
-        raise ValueError(
+        return await message.answer(
             f'Можно вывести не больше {SZ_COUNT_HOTEL} отелей.\nПопробуйте еще раз.')
 
     user = User.from_message(message)
@@ -78,10 +61,10 @@ async def select_photo(call: types.CallbackQuery):
 async def enter_count_photo(message: types.Message):
 
     if not message.text.isdigit():
-        raise TypeError(f'({message.text}) - не число.\nПопробуйте еще раз.')
+        return await message.answer(f'({message.text}) - не число.\nПопробуйте еще раз.')
 
     if int(message.text) > SZ_COUNT_PHOTO:
-        raise ValueError(
+        return await message.answer(
             f'Можно вывести только {SZ_COUNT_PHOTO} фотографий.\nПопробуйте еще раз.')
 
     user = User.from_message(message)

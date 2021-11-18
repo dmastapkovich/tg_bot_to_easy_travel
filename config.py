@@ -10,7 +10,7 @@ LOGGER_FILE = path.join(BOT_DIR, 'logs', 'log_file.log')
 TELEGRAN_TOKEN: str = env.str("TELEGRAN_TOKEN")
 
 # webhook settings
-WEBHOOK_DOMAIN = env.str("WEBHOOK_DOMAIN", default='9117-128-69-190-135.ngrok.io')
+WEBHOOK_DOMAIN = env.str("WEBHOOK_DOMAIN", default='a2ef-128-69-190-135.ngrok.io')
 WEBHOOK_PATH = ''
 WEBHOOK_URL = f"https://{WEBHOOK_DOMAIN}{WEBHOOK_PATH}"
 
