@@ -1,0 +1,15 @@
+import aiohttp
+from config import HEADERS_REQUESTS
+from loguru import logger
+
+async def get_requests(URL: str, params: dict) -> dict:
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.get(url=URL,
+                                   params=params,
+                                   headers=HEADERS_REQUESTS
+                                   ) as respons:
+                return await respons.json()
+
+        except aiohttp.ClientError as error:
+            logger.error(f"[{error.__class__.__name__}] {error}")

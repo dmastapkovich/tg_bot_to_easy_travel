@@ -6,7 +6,7 @@ from bot_init import dp
 from utils.botlogging import log_handler
 from models.user import User
 from config import SZ_COUNT_HOTEL
-from utils.hotels_requests import search_locations
+from hotelsrequests import search_locations
 
 
 @dp.message_handler(lambda message: User.from_message(message).next_hop == 'ENTER_CITY')
