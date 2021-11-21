@@ -1,6 +1,9 @@
 import aiohttp
-from config import HEADERS_REQUESTS
+
 from loguru import logger
+
+from config import HEADERS_REQUESTS
+
 
 async def get_requests(URL: str, params: dict) -> dict:
     async with aiohttp.ClientSession() as session:

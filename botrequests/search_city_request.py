@@ -28,8 +28,9 @@ async def enter_city(message: types.Message):
         return await message.answer(f"Город '{message.text}' не найден. Попробуйте еще раз.")
 
     if len(citys) == 1:
-        user.set_item_dialog('city', citys.values()[0])
-        await switch_bot_request(message, user)
+        user.set_item_dialog('city_id', list(citys.keys())[0])
+        user.set_item_dialog('city', list(citys.values())[0])
+        return await switch_bot_request(message, user)
 
     markup = await get_markup_city(citys)
     user.set_item_dialog('city', json.dumps(citys))

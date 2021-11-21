@@ -1,6 +1,6 @@
 from aiogram import types
 
-from .check_request import print_info
+from .check_request import print_check_request
 from bot_init import dp
 from utils.botlogging import log_handler
 from models.user import User
@@ -48,7 +48,7 @@ async def select_photo(call: types.CallbackQuery):
     user = User.from_message(call)
     if call.data == 'no':
         user.next_hop = 'CHECK_REQUEST'
-        await call.message.answer(f'Ваш запрос верен?\n{print_info(user)}',
+        await call.message.answer(f'Ваш запрос верен?\n{print_check_request(user)}',
                                   reply_markup=get_yes_no_button())
 
     else:
@@ -71,7 +71,7 @@ async def enter_count_photo(message: types.Message):
     user.set_item_dialog('count_photo', int(message.text))
 
     user.next_hop = 'CHECK_REQUEST'
-    await message.answer(f'Ваш запрос верен?\n{print_info(user)}',
+    await message.answer(f'Ваш запрос верен?\n{print_check_request(user)}',
                          reply_markup=get_yes_no_button())
 
 

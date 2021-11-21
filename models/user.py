@@ -67,9 +67,10 @@ class User(BaseModel):
         flag_modified(self, 'dialog')
         User.commit_user(self)
 
-    def set_history_request(self):
+    def set_history_request(self, result):
         history = History(
             request=self.dialog,
+            result=result,
             id_user=self.id_user
         )
         User.commit_history(history)

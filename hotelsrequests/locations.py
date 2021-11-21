@@ -8,7 +8,7 @@ async def search_locations(params: dict) -> dict:
     SERCH_LOCATION_URL = f'https://hotels4.p.rapidapi.com/locations/v2/search'
 
     result = await get_requests(SERCH_LOCATION_URL, params)
-    
+
     if not result:
         return None
 
@@ -17,4 +17,3 @@ async def search_locations(params: dict) -> dict:
 
     return {city['destinationId']: BeautifulSoup(city['caption'], 'html.parser').text
             for city in citys}
-    
