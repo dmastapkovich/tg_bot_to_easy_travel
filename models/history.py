@@ -2,9 +2,9 @@ from datetime import datetime
 
 from sqlalchemy import Column, Integer, JSON, DateTime
 from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy.future import select
 
-from .database import BaseModel
-
+from .database import BaseModel, async_session
 
 class History(BaseModel):
 
@@ -16,6 +16,11 @@ class History(BaseModel):
     request = Column(JSON, default={}, nullable=False)
     result = Column(JSON, default={})
     id_user = Column(Integer, ForeignKey('users.id_user'))
-    
-    def __repr__(self):
-        return f"<History(id_history='{self.id_history}',\nrequest='{self.request}', result='{self.result}')>"
+
+    async def commit(self):
+        async with async_session() as session:
+            session.add(self)
+            await session.commit()
+            
+    def __repr__(self) -> str:
+        return f"{self.id_history}"
