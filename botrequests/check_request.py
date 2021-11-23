@@ -33,7 +33,7 @@ async def get_check_info(call: CallbackQuery, state: FSMContext):
                 await call.message.answer(hotel)
 
     await call.message.delete()
-    state.finish()
+    await state.finish()
 
 
 async def print_check_request(state: FSMContext) -> str:

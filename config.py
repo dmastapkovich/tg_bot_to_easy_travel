@@ -2,6 +2,7 @@ from os import getcwd, path
 
 from envparse import env
 
+# i18n storage
 BOT_DIR: str = getcwd()
 LOCALES_DIR = path.join(BOT_DIR, 'locales')
 LOGGER_FILE = path.join(BOT_DIR, 'logs', 'log_file.log')
@@ -10,7 +11,8 @@ LOGGER_FILE = path.join(BOT_DIR, 'logs', 'log_file.log')
 TELEGRAN_TOKEN: str = env.str("TELEGRAN_TOKEN")
 
 # webhook settings
-WEBHOOK_DOMAIN = env.str("WEBHOOK_DOMAIN", default='cd9c-128-69-190-135.ngrok.io')
+WEBHOOK_DOMAIN = env.str(
+    "WEBHOOK_DOMAIN", default='6691-128-69-190-135.ngrok.io')
 WEBHOOK_PATH = ''
 WEBHOOK_URL = f"https://{WEBHOOK_DOMAIN}{WEBHOOK_PATH}"
 
@@ -18,10 +20,18 @@ WEBHOOK_URL = f"https://{WEBHOOK_DOMAIN}{WEBHOOK_PATH}"
 WEBAPP_HOST = env.str("WEBAPP_HOST", default="localhost")
 WEBAPP_PORT = env.str("WEBAPP_PORT", default="8080")
 
+# DataBase settings
 DATABASE_NAME = env.str("DATABASE_NAME", default='traveldb.db')
 DATABASE_URL_DRIVER = f"sqlite+aiosqlite:///{DATABASE_NAME}"
 DATABASE_URL_FILE = path.join(BOT_DIR, DATABASE_NAME)
 
+# Redis default settings
+REDIS_HOST = env.str("REDIS_HOST", default='localhost')
+REDIS_PORT = env.str("REDIS_PORT", default=6379)
+REDIS_NUMBER_DB = env.str("REDIS_NUMBER_DB", default=1)
+REDIS_POOL_SIZE = env.str("REDIS_POOL_SIZE", default=10)
+
+# Hotels API
 HOTELS_URL = 'hotels4.p.rapidapi.com'
 HOTELS_TOKEN = env.str("HOTELS_TOKEN")
 
@@ -30,6 +40,7 @@ HEADERS_REQUESTS = {
     'x-rapidapi-key': HOTELS_TOKEN
 }
 
+# CONSTANTS
 SZ_COUNT_HOTEL = 5
 SZ_COUNT_PHOTO = 5
 SZ_RADIUS = 5
