@@ -1,7 +1,8 @@
 from aiogram.dispatcher.storage import FSMContext
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
 from aiogram.types.input_media import MediaGroup, InputMediaPhoto
 from aiogram.dispatcher import FSMContext
+from aiogram.utils.markdown import hlink
 
 from bot_init import dp
 from utils.botlogging import log_handler
@@ -13,14 +14,28 @@ from fsmcash import StateBot
 @dp.callback_query_handler(state=StateBot.CHECK_REQUEST)
 @log_handler
 async def get_check_info(call: CallbackQuery, state: FSMContext):
-
     user = await User.from_message(call)
     data = await state.get_data()
 
     if call.data == 'yes':
-        result = await get_hotels(data)
-        hotels_info = await compose_info(result)
+        info_await: Message = await call.message.answer('Ожидайте. Уже идет поиск отелей...')
 
+        result = await get_hotels(data)
+
+        # if result warning
+        size_result = len(result)
+        if size_result == 0:
+            await call.message.reply('К сожалению, Мы не смогли найти для Вас отели по вашему запросу.')
+            await state.finish()
+            await info_await.delete()
+            return await call.message.delete()
+
+        # if requests bestdeal warning
+        if size_result != int(data['count_hotel']):
+            await call.message.reply(f'По вашему запросу было найдено только {size_result} отеля.')
+
+        await info_await.delete()
+        hotels_info = await compose_info(result)
         await user.set_history(request=data, result=result)
 
         count_photo: int = data.get('count_photo')
@@ -28,9 +43,9 @@ async def get_check_info(call: CallbackQuery, state: FSMContext):
             if count_photo:
                 photo_urls = await get_photo_urls(id_hotel, count_photo)
                 media = await compose_media(photo_urls, hotel_info=hotel)
-                await call.message.answer_media_group(media)
+                await call.message.answer_media_group(media, )
             else:
-                await call.message.answer(hotel)
+                await call.message.answer(hotel, parse_mode='HTML', disable_web_page_preview=True)
 
     await call.message.delete()
     await state.finish()
@@ -63,11 +78,11 @@ async def print_check_request(state: FSMContext) -> str:
     return info
 
 
-async def compose_info(hotels_result: list):
+async def compose_info(hotels_result: list) -> dict[int, list]:
     info = {}
     for hotel in hotels_result:
         info[hotel['id_hotel']] = "\n".join([
-            f"{hotel['name']}",
+            hlink(hotel['name'], hotel['url_hotel']),
             f"Адрес: {hotel['addres']}",
             f"Рейтинг: {hotel['rating']}",
             f"Стоимость: {hotel['price']}",
@@ -83,5 +98,6 @@ async def compose_media(photo_urls: list, hotel_info: str) -> MediaGroup:
     for url in photo_urls:
         media.append(InputMediaPhoto(url))
     media[0].caption = hotel_info
+    media[0].parse_mode = 'HTML'
 
     return media

@@ -12,7 +12,7 @@ TELEGRAN_TOKEN: str = env.str("TELEGRAN_TOKEN")
 
 # webhook settings
 WEBHOOK_DOMAIN = env.str(
-    "WEBHOOK_DOMAIN", default='6691-128-69-190-135.ngrok.io')
+    "WEBHOOK_DOMAIN", default='29f0-188-128-56-107.ngrok.io')
 WEBHOOK_PATH = ''
 WEBHOOK_URL = f"https://{WEBHOOK_DOMAIN}{WEBHOOK_PATH}"
 
@@ -39,6 +39,11 @@ HEADERS_REQUESTS = {
     'x-rapidapi-host': HOTELS_URL,
     'x-rapidapi-key': HOTELS_TOKEN
 }
+
+SERCH_LOCATION_URL = f'https://hotels4.p.rapidapi.com/locations/v2/search'
+SERCH_HOTEL_URL = 'https://hotels4.p.rapidapi.com/properties/list'
+SERCH_PHOTO_HOTEL_URL = 'https://hotels4.p.rapidapi.com/properties/get-hotel-photos'
+HOTEL_URL_FORMAT = "https://hotels.com/ho{hotel_id}"
 
 # CONSTANTS
 SZ_COUNT_HOTEL = 5

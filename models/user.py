@@ -23,7 +23,7 @@ class User(BaseModel):
             )
         return result.scalars().all()
 
-    async def set_history(self, request: dict, result: dict):
+    async def set_history(self, request: dict[str, str|int], result: dict[str, str|int]):
         await History(id_user=self.id_user,
                       request=request,
                       result=result).commit()
@@ -51,6 +51,3 @@ class User(BaseModel):
 
         cls = await user.commit() if not userdb else userdb
         return cls
-
-    def __repr__(self) -> str:
-        return f"{self.id_user}"

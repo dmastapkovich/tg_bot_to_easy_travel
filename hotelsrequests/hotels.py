@@ -1,8 +1,9 @@
 import datetime
 from .connector import get_requests
+from config import SERCH_HOTEL_URL, HOTEL_URL_FORMAT
 
 
-async def get_hotels(user_dialog: dict):
+async def get_hotels(user_dialog: dict) -> list[dict]:
     today = datetime.date.today()
     tomorrow = today + datetime.timedelta(days=1)
 
@@ -34,11 +35,8 @@ async def get_hotels(user_dialog: dict):
     return result
 
 
-async def search_hotel(params: dict):
-
-    SERCH_LOCATION_URL = 'https://hotels4.p.rapidapi.com/properties/list'
-
-    result = await get_requests(SERCH_LOCATION_URL, params)
+async def search_hotel(params: dict) -> list[dict]:
+    result = await get_requests(SERCH_HOTEL_URL, params)
 
     if not result:
         return None
@@ -47,6 +45,7 @@ async def search_hotel(params: dict):
 
     return [{
         'id_hotel': hotel['id'],
+        'url_hotel': HOTEL_URL_FORMAT.format(hotel_id=hotel['id']),
         'name': hotel['name'],
         'addres': hotel['address']['streetAddress'],
         'rating': hotel['starRating'],
@@ -55,5 +54,9 @@ async def search_hotel(params: dict):
     } for hotel in result]
 
 
-async def filter_bestdeal(hotels, radius):
+async def filter_bestdeal(hotels: list[dict], radius: int) -> list[dict]:
+    for hotel in hotels:
+        hotel_dist = hotel['location'][0]['distance']
+        if radius < hotel_dist:
+            del hotel
     return hotels

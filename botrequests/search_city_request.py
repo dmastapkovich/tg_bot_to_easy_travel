@@ -12,32 +12,31 @@ from fsmcash import StateBot
 @dp.message_handler(state=StateBot.ENTER_CITY)
 @log_handler
 async def enter_city(message: types.Message, state: FSMContext):
-
     user = await User.from_message(message)
-    citys = await search_locations(
+    cities = await search_locations(
         {'query': message.text,
          'locale': user.locale,
          'currency': user.currency}
     )
 
-    if not isinstance(citys, dict):
+    if not isinstance(cities, dict):
         await state.finish()
         return await message.answer("Ошибка доступа к hotels.com.")
 
-    if len(citys) == 0:
+    if len(cities) == 0:
         return await message.answer(f"Город '{message.text}' не найден. Попробуйте еще раз.")
 
-    if len(citys) == 1:
+    if len(cities) == 1:
         async with state.proxy() as data:
-            data['city_id'] = list(citys.keys())[0]
-            data['city'] = list(citys.values())[0]
+            data['city_id'] = list(cities.keys())[0]
+            data['city'] = list(cities.values())[0]
 
         return await switch_bot_request(message, state)
 
     async with state.proxy() as data:
-        data['citys'] = citys
+        data['cities'] = cities
 
-    markup = await get_markup_city(citys)
+    markup = await get_markup_city(cities)
     await message.answer("Выберете город из списка:", reply_markup=markup)
 
     await StateBot.SELECT_CITY.set()
@@ -46,19 +45,17 @@ async def enter_city(message: types.Message, state: FSMContext):
 @dp.callback_query_handler(state=StateBot.SELECT_CITY)
 @log_handler
 async def select_city(call: types.CallbackQuery, state: FSMContext):
-
     async with state.proxy() as data:
         data['city_id'] = call.data
-        data['city'] = data['citys'].get(call.data)
+        data['city'] = data['cities'].get(call.data)
 
     await switch_bot_request(call.message, state)
     await call.message.delete()
 
 
-async def get_markup_city(citys: dict) -> types.InlineKeyboardMarkup:
-
+async def get_markup_city(cities: dict) -> types.InlineKeyboardMarkup:
     markup = types.InlineKeyboardMarkup()
-    for id_city, name_city in citys.items():
+    for id_city, name_city in cities.items():
         markup.add(
             types.InlineKeyboardButton(name_city, callback_data=id_city)
         )

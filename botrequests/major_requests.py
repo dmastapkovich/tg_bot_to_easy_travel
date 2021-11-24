@@ -12,9 +12,8 @@ from models import User
 @dp.message_handler(commands=['lowprice', 'highprice', 'bestdeal'], state='*')
 @log_handler
 async def command_search_hotel(message: types.Message, state: FSMContext):
-
     user = await User.from_message(message)
-
+    await state.finish()
     async with state.proxy() as data:
         data['locale'] = user.locale
         data['currency'] = user.currency
@@ -27,7 +26,6 @@ async def command_search_hotel(message: types.Message, state: FSMContext):
 @dp.message_handler(state=StateBot.ENTER_COUNT_HOTEL)
 @log_handler
 async def enter_count_hotel(message: types.Message, state: FSMContext):
-
     if not message.text.isdigit():
         return await message.answer(f'({message.text}) - не число.\nПопробуйте еще раз.')
 
@@ -45,7 +43,6 @@ async def enter_count_hotel(message: types.Message, state: FSMContext):
 @dp.callback_query_handler(state=StateBot.SELECT_PHOTO)
 @log_handler
 async def select_photo(call: types.CallbackQuery, state: FSMContext):
-
     if call.data == 'no':
         await StateBot.CHECK_REQUEST.set()
         info_request = await print_check_request(state)
@@ -62,7 +59,6 @@ async def select_photo(call: types.CallbackQuery, state: FSMContext):
 @dp.message_handler(state=StateBot.ENTER_COUNT_PHOTO)
 @log_handler
 async def enter_count_photo(message: types.Message, state: FSMContext):
-
     if not message.text.isdigit():
         return await message.answer(f'({message.text}) - не число.\nПопробуйте еще раз.')
 
