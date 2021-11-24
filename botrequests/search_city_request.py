@@ -2,11 +2,11 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from bot_init import dp
-from utils.botlogging import log_handler
-from models import User
-from config import SZ_COUNT_HOTEL
-from hotelsrequests import search_locations
+from config import SZ_COUNT_HOTEL, HOTELS_URL
 from fsmcash import StateBot
+from hotelsrequests import search_locations
+from models import User
+from utils.botlogging import log_handler
 
 
 @dp.message_handler(state=StateBot.ENTER_CITY)
@@ -21,7 +21,7 @@ async def enter_city(message: types.Message, state: FSMContext):
 
     if not isinstance(cities, dict):
         await state.finish()
-        return await message.answer("Ошибка доступа к hotels.com.")
+        return await message.answer(f"Ошибка доступа к {HOTELS_URL}")
 
     if len(cities) == 0:
         return await message.answer(f"Город '{message.text}' не найден. Попробуйте еще раз.")

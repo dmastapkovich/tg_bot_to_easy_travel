@@ -2,9 +2,9 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from bot_init import dp
-from utils.botlogging import log_handler
 from config import SZ_RADIUS, SZ_COUNT_HOTEL
 from fsmcash import StateBot
+from utils.botlogging import log_handler
 
 
 @dp.message_handler(state=StateBot.ENTER_PRICE)
@@ -28,7 +28,8 @@ async def enter_price(message: types.Message, state: FSMContext):
 @dp.message_handler(state=StateBot.ENTER_RADIUS)
 @log_handler
 async def enter_radius(message: types.Message, state: FSMContext):
-    if not message.text.isdigit():
+    
+    if not message.text.replace('.', '', 1).isdigit():
         return await message.answer(f'({message.text}) - не число.\nПопробуйте еще раз.')
 
     if float(message.text) > SZ_RADIUS:

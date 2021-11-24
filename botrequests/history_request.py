@@ -2,8 +2,8 @@ from aiogram import types
 from aiogram.utils.markdown import hlink
 
 from bot_init import dp
-from utils.botlogging import log_handler
 from models.user import User, History
+from utils.botlogging import log_handler
 
 
 @dp.message_handler(commands=['history'])

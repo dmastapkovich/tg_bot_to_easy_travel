@@ -1,6 +1,9 @@
 import datetime
-from .connector import get_requests
+
+from loguru import logger
+
 from config import SERCH_HOTEL_URL, HOTEL_URL_FORMAT
+from .connector import get_requests
 
 
 async def get_hotels(user_dialog: dict) -> list[dict]:
@@ -35,6 +38,7 @@ async def get_hotels(user_dialog: dict) -> list[dict]:
     return result
 
 
+@logger.catch
 async def search_hotel(params: dict) -> list[dict]:
     result = await get_requests(SERCH_HOTEL_URL, params)
 
@@ -54,9 +58,10 @@ async def search_hotel(params: dict) -> list[dict]:
     } for hotel in result]
 
 
+@logger.catch
 async def filter_bestdeal(hotels: list[dict], radius: int) -> list[dict]:
     for hotel in hotels:
-        hotel_dist = hotel['location'][0]['distance']
-        if radius < hotel_dist:
+        hotel_dist = hotel['location'][0]['distance'].split()
+        if radius < float(hotel_dist[0]):
             del hotel
     return hotels

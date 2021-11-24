@@ -1,9 +1,9 @@
 import os
 
 from aiogram import Dispatcher
+from loguru import logger
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import declarative_base, sessionmaker
-from loguru import logger
 
 from config import DATABASE_URL_DRIVER, DATABASE_URL_FILE
 

@@ -10,3 +10,5 @@ class StateBot(StatesGroup):
     SELECT_PHOTO = State()
     ENTER_COUNT_PHOTO = State()
     CHECK_REQUEST = State()
+    SETTINGS_OPTION_MENU = State()
+    COMMIT_SETTINGS = State()

@@ -1,11 +1,11 @@
-from sqlalchemy import Column, Integer, String, JSON
-from sqlalchemy.orm import relationship, attributes
-from sqlalchemy.future import select
 from aiogram.types import Message
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.future import select
+from sqlalchemy.orm import relationship
 
+from config import LOCALES, COUNTRY_CURR, SETTINGS_CURR, SETTINGS_LOCALES
 from .database import BaseModel, async_session
 from .history import History
-from config import LOCALES, COUNTRY_CURR
 
 
 class User(BaseModel):
@@ -23,10 +23,25 @@ class User(BaseModel):
             )
         return result.scalars().all()
 
-    async def set_history(self, request: dict[str, str|int], result: dict[str, str|int]):
+    async def set_history(self, request: dict[str, str | int], result: dict[str, str | int]):
         await History(id_user=self.id_user,
                       request=request,
                       result=result).commit()
+
+    async def set_settings(self, option, value):
+        if option == 'locale':
+            self.locale = value
+        else:
+            self.currency = value
+        await self.commit()
+
+    async def get_settings(self):
+        return '\n'.join([
+            "Ваши текущие настройки:",
+            f"Язык отображения сообщений: *{SETTINGS_LOCALES.get(self.locale)}*",
+            f"Используемая валюта: *{SETTINGS_CURR.get(self.currency)}*",
+            "Выберите опцию настройки:"
+        ])
 
     async def commit(self):
         async with async_session() as session:

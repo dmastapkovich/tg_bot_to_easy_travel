@@ -1,12 +1,12 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from .check_request import print_check_request
 from bot_init import dp
-from utils.botlogging import log_handler
 from config import SZ_COUNT_PHOTO, SZ_COUNT_HOTEL
 from fsmcash import StateBot
 from models import User
+from utils.botlogging import log_handler
+from .check_request import print_check_request
 
 
 @dp.message_handler(commands=['lowprice', 'highprice', 'bestdeal'], state='*')

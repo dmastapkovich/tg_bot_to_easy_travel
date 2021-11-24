@@ -2,7 +2,6 @@ from datetime import datetime
 
 from sqlalchemy import Column, Integer, JSON, DateTime
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy.future import select
 
 from .database import BaseModel, async_session
 

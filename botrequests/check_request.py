@@ -1,14 +1,14 @@
-from aiogram.dispatcher.storage import FSMContext
 from aiogram.types import CallbackQuery, Message
 from aiogram.types.input_media import MediaGroup, InputMediaPhoto
 from aiogram.dispatcher import FSMContext
 from aiogram.utils.markdown import hlink
 
 from bot_init import dp
-from utils.botlogging import log_handler
-from models.user import User
-from hotelsrequests import get_hotels, get_photo_urls
+from config import HOTELS_URL
 from fsmcash import StateBot
+from hotelsrequests import get_hotels, get_photo_urls
+from models.user import User
+from utils.botlogging import log_handler
 
 
 @dp.callback_query_handler(state=StateBot.CHECK_REQUEST)
@@ -21,8 +21,11 @@ async def get_check_info(call: CallbackQuery, state: FSMContext):
         info_await: Message = await call.message.answer('Ожидайте. Уже идет поиск отелей...')
 
         result = await get_hotels(data)
+        if not isinstance(result, list):
+            await call.message.answer(f"Ошибка доступа к {HOTELS_URL}")
+            await call.message.delete()
+            return await state.finish()
 
-        # if result warning
         size_result = len(result)
         if size_result == 0:
             await call.message.reply('К сожалению, Мы не смогли найти для Вас отели по вашему запросу.')
@@ -30,7 +33,6 @@ async def get_check_info(call: CallbackQuery, state: FSMContext):
             await info_await.delete()
             return await call.message.delete()
 
-        # if requests bestdeal warning
         if size_result != int(data['count_hotel']):
             await call.message.reply(f'По вашему запросу было найдено только {size_result} отеля.')
 
@@ -42,8 +44,14 @@ async def get_check_info(call: CallbackQuery, state: FSMContext):
         for id_hotel, hotel in hotels_info.items():
             if count_photo:
                 photo_urls = await get_photo_urls(id_hotel, count_photo)
+
+                if photo_urls is None:
+                    await call.message.answer(f"Ошибка доступа к фотография {HOTELS_URL}")
+                    await call.message.answer(hotel, parse_mode='HTML', disable_web_page_preview=True)
+                    continue
+
                 media = await compose_media(photo_urls, hotel_info=hotel)
-                await call.message.answer_media_group(media, )
+                await call.message.answer_media_group(media)
             else:
                 await call.message.answer(hotel, parse_mode='HTML', disable_web_page_preview=True)
 
