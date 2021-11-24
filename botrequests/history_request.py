@@ -8,8 +8,9 @@ from models.user import User
 @dp.message_handler(commands=['history'])
 @log_handler
 async def cmd_history(message: types.Message):
-    user: User = User.from_message(message)
-    history: list = user.get_history()
+    
+    user = await User.from_message(message)
+    history = await user.get_history()
     for value in history:
         await message.reply(value)
         

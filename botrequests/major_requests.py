@@ -1,64 +1,67 @@
 from aiogram import types
+from aiogram.dispatcher import FSMContext
 
 from .check_request import print_check_request
 from bot_init import dp
 from utils.botlogging import log_handler
-from models.user import User
 from config import SZ_COUNT_PHOTO, SZ_COUNT_HOTEL
+from fsmcash import StateBot
+from models import User
 
 
-@dp.message_handler(commands=['lowprice', 'highprice', 'bestdeal'])
+@dp.message_handler(commands=['lowprice', 'highprice', 'bestdeal'], state='*')
 @log_handler
-async def command_search_hotel(message: types.Message):
+async def command_search_hotel(message: types.Message, state: FSMContext):
 
-    user = User.from_message(message)
-    user.bot_request = message.text
-    user.set_item_dialog('request', message.text)
+    user = await User.from_message(message)
+
+    async with state.proxy() as data:
+        data['locale'] = user.locale
+        data['currency'] = user.currency
+        data['request'] = message.text
 
     await message.answer('Какой город хотите посетить?')
+    await StateBot.ENTER_CITY.set()
 
-    user.next_hop = 'ENTER_CITY'
 
-
-@dp.message_handler(lambda message: User.from_message(message).next_hop == 'ENTER_COUNT_HOTEL')
+@dp.message_handler(state=StateBot.ENTER_COUNT_HOTEL)
 @log_handler
-async def enter_count_hotel(message: types.Message):
+async def enter_count_hotel(message: types.Message, state: FSMContext):
 
     if not message.text.isdigit():
         return await message.answer(f'({message.text}) - не число.\nПопробуйте еще раз.')
-        
 
     if int(message.text) > SZ_COUNT_HOTEL:
         return await message.answer(
             f'Можно вывести не больше {SZ_COUNT_HOTEL} отелей.\nПопробуйте еще раз.')
 
-    user = User.from_message(message)
-    
-    user.set_item_dialog('count_hotel', int(message.text))
-    user.next_hop = 'SELECT_PHOTO'
+    async with state.proxy() as data:
+        data['count_hotel'] = int(message.text)
 
+    await StateBot.next()
     await message.answer('Выводить фотографии?',  reply_markup=get_yes_no_button())
 
 
-@dp.callback_query_handler(lambda message: User.from_message(message).next_hop == 'SELECT_PHOTO')
+@dp.callback_query_handler(state=StateBot.SELECT_PHOTO)
 @log_handler
-async def select_photo(call: types.CallbackQuery):
+async def select_photo(call: types.CallbackQuery, state: FSMContext):
 
-    await call.message.delete()
-    user = User.from_message(call)
     if call.data == 'no':
-        user.next_hop = 'CHECK_REQUEST'
-        await call.message.answer(f'Ваш запрос верен?\n{print_check_request(user)}',
+        await StateBot.CHECK_REQUEST.set()
+        info_request = await print_check_request(state)
+        await call.message.answer(f'Ваш запрос верен?\n{info_request}',
                                   reply_markup=get_yes_no_button())
 
     else:
-        user.next_hop = 'ENTER_COUNT_PHOTO'
+        await StateBot.next()
         await call.message.answer(f'Введите количество выводимых фотографий(до {SZ_COUNT_PHOTO}):')
 
+    await call.message.delete()
 
-@dp.message_handler(lambda message: User.from_message(message).next_hop == 'ENTER_COUNT_PHOTO')
+
+@dp.message_handler(state=StateBot.ENTER_COUNT_PHOTO)
 @log_handler
-async def enter_count_photo(message: types.Message):
+async def enter_count_photo(message: types.Message, state: FSMContext):
 
     if not message.text.isdigit():
         return await message.answer(f'({message.text}) - не число.\nПопробуйте еще раз.')
@@ -67,11 +70,12 @@ async def enter_count_photo(message: types.Message):
         return await message.answer(
             f'Можно вывести только {SZ_COUNT_PHOTO} фотографий.\nПопробуйте еще раз.')
 
-    user = User.from_message(message)
-    user.set_item_dialog('count_photo', int(message.text))
+    async with state.proxy() as data:
+        data['count_photo'] = int(message.text)
 
-    user.next_hop = 'CHECK_REQUEST'
-    await message.answer(f'Ваш запрос верен?\n{print_check_request(user)}',
+    await StateBot.next()
+    info_request = await print_check_request(state)
+    await message.answer(f'Ваш запрос верен?\n{info_request}',
                          reply_markup=get_yes_no_button())
 
 

@@ -1,23 +1,29 @@
+from aiogram.dispatcher.storage import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.types.input_media import MediaGroup, InputMediaPhoto
+from aiogram.dispatcher import FSMContext
 
 from bot_init import dp
 from utils.botlogging import log_handler
 from models.user import User
 from hotelsrequests import get_hotels, get_photo_urls
+from fsmcash import StateBot
 
 
-@dp.callback_query_handler(lambda message: User.from_message(message).next_hop == 'CHECK_REQUEST')
+@dp.callback_query_handler(state=StateBot.CHECK_REQUEST)
 @log_handler
-async def get_check_info(call: CallbackQuery):
+async def get_check_info(call: CallbackQuery, state: FSMContext):
 
-    user = User.from_message(call)
+    user = await User.from_message(call)
+    data = await state.get_data()
 
     if call.data == 'yes':
-        result = await get_hotels(user.dialog)
+        result = await get_hotels(data)
         hotels_info = await compose_info(result)
-        user.set_history_request(result)
-        count_photo: int = user.dialog.get('count_photo')
+
+        await user.set_history(request=data, result=result)
+
+        count_photo: int = data.get('count_photo')
         for id_hotel, hotel in hotels_info.items():
             if count_photo:
                 photo_urls = await get_photo_urls(id_hotel, count_photo)
@@ -27,12 +33,13 @@ async def get_check_info(call: CallbackQuery):
                 await call.message.answer(hotel)
 
     await call.message.delete()
-    user.next_hop = ''
+    await state.finish()
 
 
-def print_check_request(user: User) -> str:
+async def print_check_request(state: FSMContext) -> str:
     info = ''
-    for key, value in user.dialog.items():
+    data = await state.get_data()
+    for key, value in data.items():
         match key:
             case 'request':
                 if value == '/lowprice':
