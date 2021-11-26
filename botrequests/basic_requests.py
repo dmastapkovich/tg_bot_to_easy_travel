@@ -1,8 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher.filters import CommandHelp, CommandStart, CommandSettings
 from aiogram.dispatcher import FSMContext
-from aiogram.utils.exceptions import BotBlocked
-from loguru import logger
+
 
 from bot_init import dp
 from config import INFO_COMMAND, SETTINGS_CURR, SETTINGS_LOCALES

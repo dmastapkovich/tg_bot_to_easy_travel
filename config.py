@@ -12,11 +12,11 @@ try:
     LOGGER_FILE = path.join(BOT_DIR, 'logs', 'log_file.log')
 
     # TOKEN Telegram bot
-    TELEGRAN_TOKEN: str = env.str("TELEGRAN_TOKEN")
+    TELEGRAN_TOKEN: str = env.str("TELEGRAN_TOKEN", default='2088846652:AAHZ73ULPkpC3d207mJ-wbTtAQUY6-stK-c')
 
     # webhook settings
     WEBHOOK_DOMAIN = env.str(
-        "WEBHOOK_DOMAIN", default='ef3e-128-69-190-135.ngrok.io')
+        "WEBHOOK_DOMAIN", default='a2e8-188-128-56-107.ngrok.io')
     WEBHOOK_PATH = ''
     WEBHOOK_URL = f"https://{WEBHOOK_DOMAIN}{WEBHOOK_PATH}"
 
@@ -37,7 +37,7 @@ try:
 
     # Hotels API
     HOTELS_URL = 'hotels4.p.rapidapi.com'
-    HOTELS_TOKEN = env.str("HOTELS_TOKEN")
+    HOTELS_TOKEN = env.str("HOTELS_TOKEN", default='123')
 
     HEADERS_REQUESTS = {
         'x-rapidapi-host': HOTELS_URL,
