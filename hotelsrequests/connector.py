@@ -13,4 +13,4 @@ async def get_requests(URL: str, params: dict[str, str | int]) -> dict[str, str 
                 logger.info(f"Respons [{URL}] status code: {respons.status}")
                 return await respons.json()
             else:
-                raise aiohttp.ClientConnectorError(f"Status code: {respons.status}")
+                logger.error(f"[ClientConnectorError] Status code: {respons.status}")

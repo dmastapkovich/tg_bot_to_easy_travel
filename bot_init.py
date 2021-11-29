@@ -2,40 +2,49 @@ import aiogram
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
-from aiogram.dispatcher import storage
 from aiogram.utils.executor import Executor
 
 from loguru import logger
 
 import config
-from models.database import setup_db
-import utils.botlogging as logging
-import utils.botl_i18n as i18n
-
+from models.database import db_setup
+from utils import logging_setup
+from utils.bot_i18n import Localization
 
 try:
-    storage = RedisStorage2(
+    fsm_storage = RedisStorage2(
         host=config.REDIS_HOST,
         port=config.REDIS_PORT,
-        db=config.REDIS_NUMBER_DB,
+        db=config.REDIS_FSM_STORAGE,
         pool_size=config.REDIS_POOL_SIZE,
         prefix='FSM_REDIS_STORAGE'
     )
     
     bot = Bot(config.TELEGRAN_TOKEN)
-    bot.logger = logger
-    dp = Dispatcher(bot, storage=storage)
-    dp.logger = logger
-    dp.middleware.setup(LoggingMiddleware())
-
+    dp = Dispatcher(bot, storage=fsm_storage)
     execut = Executor(dp)
+    
+    i18n = Localization(config.I18N_DOMAIN, config.LOCALES_DIR)
+    _ = i18n.lazy_gettext
 
 except aiogram.exceptions.BadRequest as error:
     logger.exception(f"[{error.__class__.__name__}] {error}")
     raise SystemExit(error)
 
 
-async def startup(dispatcher: Dispatcher):
+async def middleware_setup(dispatcher: Dispatcher):
+    logger.info(
+        f"Setup internationalize middleware. DOMAIN: {config.I18N_DOMAIN}")
+    dispatcher.middleware.setup(i18n)
+
+    logger.info("Setup logging middleware.")
+    dispatcher.middleware.setup(LoggingMiddleware())
+
+
+async def start_bot(dispatcher: Dispatcher):
+    logger.info("Import handlers bot_TooEasyTravel")
+    import botrequests
+
     logger.info("Setup Executor aiogram: {url}", url=config.WEBHOOK_URL)
     await dispatcher.bot.set_webhook(config.WEBHOOK_URL)
 
@@ -46,13 +55,10 @@ async def shutdown(dispatcher: Dispatcher):
 
 
 def setup():
-    logging.setup()
     logger.info("Setup basic settings")
-    i18n.setup()
-    execut.on_startup([startup, setup_db], webhook=True, polling=False)
+    execut.on_startup([logging_setup, db_setup, middleware_setup, start_bot],
+                      webhook=True, polling=False)
     execut.on_shutdown(shutdown)
-    logger.info("Setup handlers bot_TooEasyTravel")
-    import botrequests
 
 
 @logger.catch

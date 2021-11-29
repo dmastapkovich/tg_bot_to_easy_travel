@@ -1,8 +1,7 @@
 import functools
 from typing import ParamSpec, TypeVar, Callable
 
-from aiogram import exceptions
-from aiogram import types
+from aiogram import types, exceptions, Dispatcher
 from aiogram.dispatcher.storage import FSMContext
 from loguru import logger
 
@@ -14,7 +13,7 @@ P = ParamSpec('P')
 T = TypeVar('T')
 
 
-def setup():
+async def logging_setup(dispatcher: Dispatcher):
     logger.add(LOGGER_FILE, level="DEBUG", rotation="5 MB")
     logger.info(f"Setup loguru in: {LOGGER_FILE}")
 
@@ -34,13 +33,13 @@ def log_handler(func: Callable[P, T]) -> Callable[P, T]:
         try:
             logger.info(f"{user} event function [{func.__name__}]. Entered value: {result}")
             return await func(*args, **kwargs)
-        
-        except exceptions.BadRequest as error:
-            logger.exception(
-                f"[{error.__class__.__name__} -> {error}] {user} event function [{func.__name__}].")
 
         except exceptions.BotBlocked as error:
             logger.error(f"[{error.__class__.__name__} -> {error}] {user}")
             await state.finish()
+        
+        except Exception as error:
+            logger.exception(
+                f"[{error.__class__.__name__} -> {error}] {user} event function [{func.__name__}].")
         
     return logger.catch(wrapper)

@@ -17,7 +17,7 @@ class BaseModel(Base):
     __abstract__ = True
 
 
-async def setup_db(dispatcher: Dispatcher):
+async def db_setup(dispatcher: Dispatcher):
     from .history import History
     from .user import User
 

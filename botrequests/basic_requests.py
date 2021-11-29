@@ -7,7 +7,7 @@ from bot_init import dp
 from config import INFO_COMMAND, SETTINGS_CURR, SETTINGS_LOCALES
 from fsmcash import StateBot
 from models import User
-from utils.botlogging import log_handler
+from utils import log_handler, locale_storage
 
 
 @dp.message_handler(CommandHelp() | CommandStart(), state='*')
@@ -61,6 +61,10 @@ async def cmd_commit_settings(callback: types.CallbackQuery, state: FSMContext):
     user = await User.from_message(callback)
 
     await user.set_settings(option=data['option'], value=commit_value)
+
+    if data['option'] == 'locale':
+        await locale_storage.set(user.id_user, user.i18n_code)
+
     await callback.message.delete()
     await state.finish()
 

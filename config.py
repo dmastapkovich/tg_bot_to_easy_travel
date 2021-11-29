@@ -1,4 +1,4 @@
-from os import getcwd, path
+from os import path
 
 from loguru import logger
 
@@ -7,16 +7,16 @@ from envparse import env, ConfigurationError
 
 try:
     # i18n storage
-    BOT_DIR: str = getcwd()
-    LOCALES_DIR = path.join(BOT_DIR, 'locales')
-    LOGGER_FILE = path.join(BOT_DIR, 'logs', 'log_file.log')
+    LOCALES_DIR = path.join('locales')
+    LOGGER_FILE = path.join('logs', 'log_file.log')
+    I18N_DOMAIN = "travelbot"
 
     # TOKEN Telegram bot
     TELEGRAN_TOKEN: str = env.str("TELEGRAN_TOKEN", default='2088846652:AAHZ73ULPkpC3d207mJ-wbTtAQUY6-stK-c')
 
     # webhook settings
     WEBHOOK_DOMAIN = env.str(
-        "WEBHOOK_DOMAIN", default='a2e8-188-128-56-107.ngrok.io')
+        "WEBHOOK_DOMAIN", default='e76e-188-128-56-107.ngrok.io')
     WEBHOOK_PATH = ''
     WEBHOOK_URL = f"https://{WEBHOOK_DOMAIN}{WEBHOOK_PATH}"
 
@@ -27,17 +27,27 @@ try:
     # DataBase settings
     DATABASE_NAME = env.str("DATABASE_NAME", default='traveldb.db')
     DATABASE_URL_DRIVER = f"sqlite+aiosqlite:///{DATABASE_NAME}"
-    DATABASE_URL_FILE = path.join(BOT_DIR, DATABASE_NAME)
+    DATABASE_URL_FILE = path.join(DATABASE_NAME)
 
     # Redis default settings
     REDIS_HOST = env.str("REDIS_HOST", default='localhost')
     REDIS_PORT = env.str("REDIS_PORT", default=6379)
-    REDIS_NUMBER_DB = env.str("REDIS_NUMBER_DB", default=1)
+    # Storage for locales of the user
+    REDIS_LOCALES_STORAGE = env.str("REDIS_LOCALES_STORAGE", default=0)
+    # Storage for locales of the user
+    REDIS_CITY_STORAGE = env.str("REDIS_CITY_STORAGE", default=1)
+    # Storage for FSM state user
+    REDIS_FSM_STORAGE = env.str("REDIS_FSM_STORAGE", default=2)
     REDIS_POOL_SIZE = env.str("REDIS_POOL_SIZE", default=10)
-
+    
+    if ((REDIS_LOCALES_STORAGE == REDIS_CITY_STORAGE) 
+        or (REDIS_LOCALES_STORAGE== REDIS_FSM_STORAGE)
+        or (REDIS_FSM_STORAGE == REDIS_CITY_STORAGE)):
+        raise ConfigurationError('REDIS_STORAGE in one database')
+    
     # Hotels API
     HOTELS_URL = 'hotels4.p.rapidapi.com'
-    HOTELS_TOKEN = env.str("HOTELS_TOKEN", default='123')
+    HOTELS_TOKEN = env.str("HOTELS_TOKEN", default='8059d8abd1msh7ec858fd45ecf2fp11636fjsn380eb44c4ddc')
 
     HEADERS_REQUESTS = {
         'x-rapidapi-host': HOTELS_URL,

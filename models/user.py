@@ -1,4 +1,4 @@
-from aiogram.types import Message
+from aiogram.types import Message, User
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.future import select
 from sqlalchemy.orm import relationship
@@ -13,6 +13,7 @@ class User(BaseModel):
 
     id_user = Column(Integer, primary_key=True, index=True, unique=True)
     locale = Column(String)
+    i18n_code = Column(String)
     currency = Column(String)
     _history = relationship("History", uselist=False)
 
@@ -28,8 +29,9 @@ class User(BaseModel):
                       request=request,
                       result=result).commit()
 
-    async def set_settings(self, option, value):
+    async def set_settings(self, option: str, value: str):
         if option == 'locale':
+            self.i18n_code = value.split('_')[0]
             self.locale = value
         else:
             self.currency = value
@@ -50,12 +52,13 @@ class User(BaseModel):
         return self
 
     @classmethod
-    async def from_message(cls, messge: Message):
-        _locale = LOCALES.get(messge.from_user.language_code, 'ru_RU')
-        _currency = COUNTRY_CURR.get(messge.from_user.language_code, 'RUB')
-
-        user = User(id_user=messge.from_user.id,
+    async def from_user(cls, user: User):
+        _locale = LOCALES.get(user.language_code, 'ru_RU')
+        _currency = COUNTRY_CURR.get(user.language_code, 'RUB')
+        _i18n_code = 'ru'
+        user = User(id_user=user.id,
                     locale=_locale,
+                    i18n_code=_i18n_code,
                     currency=_currency)
 
         async with async_session() as session:
@@ -66,3 +69,7 @@ class User(BaseModel):
 
         cls = await user.commit() if not userdb else userdb
         return cls
+
+    @classmethod
+    async def from_message(cls, messge: Message):
+        return await User.from_user(messge.from_user)

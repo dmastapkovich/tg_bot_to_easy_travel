@@ -6,25 +6,33 @@ from config import SZ_COUNT_HOTEL, HOTELS_URL
 from fsmcash import StateBot
 from hotelsrequests import search_locations
 from models import User
-from utils.botlogging import log_handler
+from utils import log_handler, set_city, get_city_request
 
 
 @dp.message_handler(state=StateBot.ENTER_CITY)
 @log_handler
 async def enter_city(message: types.Message, state: FSMContext):
-    user = await User.from_message(message)
-    cities = await search_locations(
-        {'query': message.text,
-         'locale': user.locale,
-         'currency': user.currency}
-    )
+    user: User = await User.from_message(message)
+    cities: str | list[str] = await get_city_request(message.text)
 
-    if not isinstance(cities, dict):
-        await state.finish()
-        return await message.answer(f"Ошибка доступа к {HOTELS_URL}")
+    _locale = 'ru_RU'
+    # if message.from_user.locale
+    
+    if not cities:
+        cities = await search_locations(
+            {'query': message.text,
+             'locale': user.locale,
+             'currency': user.currency}
+        )        
 
-    if len(cities) == 0:
-        return await message.answer(f"Город '{message.text}' не найден. Попробуйте еще раз.")
+        if not isinstance(cities, dict):
+            await state.finish()
+            return await message.answer(f"Ошибка доступа к {HOTELS_URL}")
+
+        if len(cities) == 0:
+            return await message.answer(f"Город '{message.text}' не найден. Попробуйте еще раз.")
+        
+        await set_city(message.text, cities)
 
     if len(cities) == 1:
         async with state.proxy() as data:
