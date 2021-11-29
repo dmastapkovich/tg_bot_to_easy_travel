@@ -13,7 +13,7 @@ async def get_hotels(user_dialog: dict) -> list[dict]:
     user_request = user_dialog['request']
     params = {
         'destinationId': user_dialog['city_id'],
-        'pageNumber': '1',
+        'pageNumber': 1,
         'pageSize': user_dialog['count_hotel'],
         'checkIn': today.strftime('%Y-%m-%d'),
         'checkOut': tomorrow.strftime('%Y-%m-%d'),
@@ -41,12 +41,9 @@ async def get_hotels(user_dialog: dict) -> list[dict]:
 @logger.catch
 async def search_hotel(params: dict) -> list[dict]:
     result = await get_requests(SERCH_HOTEL_URL, params)
-
     if not result:
         return None
-
     result = result['data']['body']['searchResults']['results']
-
     return [{
         'id_hotel': hotel['id'],
         'url_hotel': HOTEL_URL_FORMAT.format(hotel_id=hotel['id']),
@@ -60,8 +57,15 @@ async def search_hotel(params: dict) -> list[dict]:
 
 @logger.catch
 async def filter_bestdeal(hotels: list[dict], radius: int) -> list[dict]:
+    result = []
+    
     for hotel in hotels:
-        hotel_dist = hotel['location'][0]['distance'].split()
-        if radius < float(hotel_dist[0]):
-            del hotel
-    return hotels
+        hotel_dist:str = hotel['location'][0]['distance'].split()[0]
+        
+        if ',' in hotel_dist:
+            hotel_dist = hotel_dist.replace(',', '.')
+            
+        if radius > float(hotel_dist):
+            result.append(hotel)
+            
+    return result

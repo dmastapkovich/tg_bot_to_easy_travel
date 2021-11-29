@@ -2,6 +2,8 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.types.input_media import MediaGroup, InputMediaPhoto
 from aiogram.dispatcher import FSMContext
 from aiogram.utils.markdown import hlink
+from aiogram.utils.exceptions import BadRequest
+from loguru import logger
 
 from bot_init import dp
 from config import HOTELS_URL
@@ -34,7 +36,7 @@ async def get_check_info(call: CallbackQuery, state: FSMContext):
             return await call.message.delete()
 
         if size_result != int(data['count_hotel']):
-            await call.message.reply(f'По вашему запросу было найдено только {size_result} отеля.')
+            await call.message.answer(f'По вашему запросу было найдено только {size_result} отеля.')
 
         await info_await.delete()
         hotels_info = await compose_info(result)
@@ -46,12 +48,17 @@ async def get_check_info(call: CallbackQuery, state: FSMContext):
                 photo_urls = await get_photo_urls(id_hotel, count_photo)
 
                 if photo_urls is None:
-                    await call.message.answer(f"Ошибка доступа к фотография {HOTELS_URL}")
+                    await call.message.answer(f"Ошибка доступа к фотографиям {HOTELS_URL}")
                     await call.message.answer(hotel, parse_mode='HTML', disable_web_page_preview=True)
                     continue
 
                 media = await compose_media(photo_urls, hotel_info=hotel)
-                await call.message.answer_media_group(media)
+                try:
+                    await call.message.answer_media_group(media)
+                except BadRequest as error:
+                    logger.exception(f"[{error.__class__.__name__} -> {error}] {user}")
+                    await call.message.answer(f"Ошибка вывода фотографий.")
+                    await call.message.answer(hotel, parse_mode='HTML', disable_web_page_preview=True)
             else:
                 await call.message.answer(hotel, parse_mode='HTML', disable_web_page_preview=True)
 
@@ -104,7 +111,7 @@ async def compose_media(photo_urls: list, hotel_info: str) -> MediaGroup:
     media: list[InputMediaPhoto] = []
 
     for url in photo_urls:
-        media.append(InputMediaPhoto(url))
+        await media.append(InputMediaPhoto(url))
     media[0].caption = hotel_info
     media[0].parse_mode = 'HTML'
 
