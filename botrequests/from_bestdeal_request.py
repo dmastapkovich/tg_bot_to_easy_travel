@@ -28,15 +28,17 @@ async def enter_price(message: types.Message, state: FSMContext):
 @dp.message_handler(state=StateBot.ENTER_RADIUS)
 @log_handler
 async def enter_radius(message: types.Message, state: FSMContext):
-    
-    if not message.text.replace('.', '', 1).isdigit():
-        return await message.answer(f'({message.text}) - не число.\nПопробуйте еще раз.')
+    radius = message.text
+    if ',' in radius:
+        radius = radius.replace(',', '.', 1)
+    if not radius.replace('.', '', 1).isdigit():
+        return await message.answer(f'({radius}) - не число.\nПопробуйте еще раз.')
 
-    if float(message.text) > SZ_RADIUS:
+    if float(radius) > SZ_RADIUS:
         return await message.answer(f'Максимальная удаленность от центра {SZ_RADIUS} км.\nПопробуйте еще раз.')
 
     async with state.proxy() as data:
-        data['radius'] = float(message.text)
+        data['radius'] = float(radius)
 
     await StateBot.next()
     await message.answer(f'Введите количество выводимых отелей(до {SZ_COUNT_HOTEL}):')

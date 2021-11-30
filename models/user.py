@@ -1,4 +1,4 @@
-from aiogram.types import Message, User
+from aiogram import types
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.future import select
 from sqlalchemy.orm import relationship
@@ -52,7 +52,7 @@ class User(BaseModel):
         return self
 
     @classmethod
-    async def from_user(cls, user: User):
+    async def from_user(cls, user: types.User):
         _locale = LOCALES.get(user.language_code, 'ru_RU')
         _currency = COUNTRY_CURR.get(user.language_code, 'RUB')
         _i18n_code = 'ru'
@@ -71,5 +71,5 @@ class User(BaseModel):
         return cls
 
     @classmethod
-    async def from_message(cls, messge: Message):
+    async def from_message(cls, messge: types.Message):
         return await User.from_user(messge.from_user)

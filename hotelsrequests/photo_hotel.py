@@ -18,5 +18,4 @@ async def get_photo_urls(id_hotel: int, count_photo: int) -> list[str]:
     if len(result) > count_photo:
         result = sample(result, count_photo)
 
-    result = [image['baseUrl'].format(size='y') for image in result]
-    return result
+    return [image['baseUrl'].format(size='y') for image in result]

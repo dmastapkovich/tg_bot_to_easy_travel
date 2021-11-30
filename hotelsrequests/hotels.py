@@ -9,8 +9,8 @@ from .connector import get_requests
 async def get_hotels(user_dialog: dict) -> list[dict]:
     today = datetime.date.today()
     tomorrow = today + datetime.timedelta(days=1)
-
     user_request = user_dialog['request']
+    
     params = {
         'destinationId': user_dialog['city_id'],
         'pageNumber': 1,
@@ -34,16 +34,20 @@ async def get_hotels(user_dialog: dict) -> list[dict]:
     result = await search_hotel(params)
 
     if user_request == '/bestdeal':
-        return await filter_bestdeal(result, user_dialog['radius'])
+        result = await filter_bestdeal(result, user_dialog['radius'])
+    
     return result
 
 
 @logger.catch
 async def search_hotel(params: dict) -> list[dict]:
     result = await get_requests(SERCH_HOTEL_URL, params)
+    
     if not result:
         return None
+    
     result = result['data']['body']['searchResults']['results']
+    
     return [{
         'id_hotel': hotel['id'],
         'url_hotel': HOTEL_URL_FORMAT.format(hotel_id=hotel['id']),

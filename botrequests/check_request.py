@@ -67,30 +67,30 @@ async def get_check_info(call: CallbackQuery, state: FSMContext):
 
 
 async def print_check_request(state: FSMContext) -> str:
-    info = ''
+    info = []
     data = await state.get_data()
     for key, value in data.items():
         match key:
             case 'request':
                 if value == '/lowprice':
-                    info += 'Поиск дешевых отелей.\n'
+                    info.append('Поиск дешевых отелей.')
                 elif value == '/highprice':
-                    info += 'Поиск дорогих отелей.\n'
+                    info.append('Поиск дорогих отелей.')
                 elif value == '/highprice':
-                    info += 'Поиск отелей.\n'
+                    info.append('Поиск отелей.')
             case 'begin_price':
-                info += f'Цена от {value}\n'
+                info.append(f'Цена от {value}')
             case 'end_price':
-                info += f'Цена до {value}\n'
+                info.append(f'Цена до {value}')
             case 'radius':
-                info += f'Удаленность от центра до {value} км\n'
+                info.append(f'Удаленность от центра до {value} км')
             case 'city':
-                info += f'Город: {value}\n'
+                info.append(f'Город: {value}')
             case 'count_hotel':
-                info += f'Количестов выводимых отелей: {value}\n'
+                info.append(f'Количестов выводимых отелей: {value}')
             case 'count_photo':
-                info += f'Количестов выводимых фотографий: {value}\n'
-    return info
+                info.append(f'Количестов выводимых фотографий: {value}')
+    return '\n'.join(info)
 
 
 async def compose_info(hotels_result: list) -> dict[int, list]:
@@ -109,10 +109,11 @@ async def compose_info(hotels_result: list) -> dict[int, list]:
 
 async def compose_media(photo_urls: list, hotel_info: str) -> MediaGroup:
     media: list[InputMediaPhoto] = []
-
+    
     for url in photo_urls:
         await media.append(InputMediaPhoto(url))
+        
     media[0].caption = hotel_info
     media[0].parse_mode = 'HTML'
-
+    
     return media

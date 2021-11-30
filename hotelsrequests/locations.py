@@ -9,6 +9,7 @@ from .connector import get_requests
 @logger.catch
 async def search_locations(params: dict) -> dict[int, str]:
     result = await get_requests(SERCH_LOCATION_URL, params)
+    
     if not result:
         return None
 
