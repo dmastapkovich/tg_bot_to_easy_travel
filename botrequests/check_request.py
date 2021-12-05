@@ -5,12 +5,11 @@ from aiogram.utils.markdown import hlink
 from aiogram.utils.exceptions import BadRequest
 from loguru import logger
 
-from bot_init import dp
+from bot_init import dp, _
 from config import HOTELS_URL
-from fsmcash import StateBot
 from hotelsrequests import get_hotels, get_photo_urls
-from models.user import User
-from utils.botlogging import log_handler
+from models import User
+from utils import StateBot, log_handler
 
 
 @dp.callback_query_handler(state=StateBot.CHECK_REQUEST)
@@ -20,26 +19,26 @@ async def get_check_info(call: CallbackQuery, state: FSMContext):
     data = await state.get_data()
 
     if call.data == 'yes':
-        info_await: Message = await call.message.answer('Ожидайте. Уже идет поиск отелей...')
+        info_await: Message = await call.message.answer(_('Ожидайте. Уже идет поиск отелей...'))
 
         result = await get_hotels(data)
         if not isinstance(result, list):
-            await call.message.answer(f"Ошибка доступа к {HOTELS_URL}")
+            await call.message.answer(_("Ошибка доступа к {text}").format(text=HOTELS_URL))
             await call.message.delete()
             return await state.finish()
 
         size_result = len(result)
         if size_result == 0:
-            await call.message.reply('К сожалению, Мы не смогли найти для Вас отели по вашему запросу.')
+            await call.message.reply(_('К сожалению, Мы не смогли найти для Вас отели по вашему запросу.'))
             await state.finish()
             await info_await.delete()
             return await call.message.delete()
 
         if size_result != int(data['count_hotel']):
-            await call.message.answer(f'По вашему запросу было найдено только {size_result} отеля.')
+            await call.message.answer(_('По вашему запросу было найдено только {text} отеля.').format(text=size_result))
 
         await info_await.delete()
-        hotels_info = await compose_info(result)
+        hotels_info = await compose_info(result, data)
         await user.set_history(request=data, result=result)
 
         count_photo: int = data.get('count_photo')
@@ -48,19 +47,20 @@ async def get_check_info(call: CallbackQuery, state: FSMContext):
                 photo_urls = await get_photo_urls(id_hotel, count_photo)
 
                 if photo_urls is None:
-                    await call.message.answer(f"Ошибка доступа к фотографиям {HOTELS_URL}")
-                    await call.message.answer(hotel, parse_mode='HTML', disable_web_page_preview=True)
+                    await call.message.answer(_("Ошибка доступа к фотографиям {text}").format(text=HOTELS_URL))
+                    await call.message.answer(hotel, parse_mode='Markdown', disable_web_page_preview=True)
                     continue
 
                 media = await compose_media(photo_urls, hotel_info=hotel)
                 try:
                     await call.message.answer_media_group(media)
                 except BadRequest as error:
-                    logger.exception(f"[{error.__class__.__name__} -> {error}] {user}")
-                    await call.message.answer(f"Ошибка вывода фотографий.")
-                    await call.message.answer(hotel, parse_mode='HTML', disable_web_page_preview=True)
+                    logger.exception(
+                        f"[{error.__class__.__name__} -> {error}] {user}")
+                    await call.message.answer(_("Ошибка вывода фотографий."))
+                    await call.message.answer(hotel, parse_mode='Markdown', disable_web_page_preview=True)
             else:
-                await call.message.answer(hotel, parse_mode='HTML', disable_web_page_preview=True)
+                await call.message.answer(hotel, parse_mode='Markdown', disable_web_page_preview=True)
 
     await call.message.delete()
     await state.finish()
@@ -73,35 +73,44 @@ async def print_check_request(state: FSMContext) -> str:
         match key:
             case 'request':
                 if value == '/lowprice':
-                    info.append('Поиск дешевых отелей.')
+                    info.append(_('Поиск дешевых отелей.'))
                 elif value == '/highprice':
-                    info.append('Поиск дорогих отелей.')
+                    info.append(_('Поиск дорогих отелей.'))
                 elif value == '/highprice':
-                    info.append('Поиск отелей.')
+                    info.append(_('Поиск отелей.'))
+            case 'checkIn':
+                info.append(_('Дата заезда: {value}').format(value=value))
+            case 'checkOut':
+                info.append(_('Дата выезда: {value}').format(value=value))
             case 'begin_price':
-                info.append(f'Цена от {value}')
+                info.append(_('Цена от {value}').format(value=value))
             case 'end_price':
-                info.append(f'Цена до {value}')
+                info.append(_('Цена до {value}').format(value=value))
             case 'radius':
-                info.append(f'Удаленность от центра до {value} км')
+                info.append(
+                    _('Удаленность от центра до {value} км').format(value=value))
             case 'city':
-                info.append(f'Город: {value}')
+                info.append(_('Город: {value}').format(value=value))
             case 'count_hotel':
-                info.append(f'Количестов выводимых отелей: {value}')
+                info.append(
+                    _('Количестов выводимых отелей: {value}').format(value=value))
             case 'count_photo':
-                info.append(f'Количестов выводимых фотографий: {value}')
+                info.append(
+                    _('Количестов выводимых фотографий: {value}').format(value=value))
     return '\n'.join(info)
 
 
-async def compose_info(hotels_result: list) -> dict[int, list]:
+async def compose_info(hotels_result: list, data: dict) -> dict[int, list]:
     info = {}
     for hotel in hotels_result:
         info[hotel['id_hotel']] = "\n".join([
             hlink(hotel['name'], hotel['url_hotel']),
-            f"Адрес: {hotel['addres']}",
-            f"Рейтинг: {hotel['rating']}",
-            f"Стоимость: {hotel['price']}",
-            f"Удаленность:",
+            _("Адрес: {text}").format(text=hotel['addres']),
+            _("Рейтинг: {text}").format(text=hotel['rating']),
+            _("Дата заезда: {date_in}").format(date_in=data['checkIn']),
+            _("Дата выезда: {date_out}").format(date_out=data['checkOut']),
+            _("Стоимость: {text}").format(text=hotel['price']),
+            _("Удаленность:"),
             *[f"{distance['label']} - {distance['distance']}" for distance in hotel['location']]
         ])
     return info
@@ -109,11 +118,11 @@ async def compose_info(hotels_result: list) -> dict[int, list]:
 
 async def compose_media(photo_urls: list, hotel_info: str) -> MediaGroup:
     media: list[InputMediaPhoto] = []
-    
+
     for url in photo_urls:
-        await media.append(InputMediaPhoto(url))
-        
+        media.append(InputMediaPhoto(url))
+
     media[0].caption = hotel_info
     media[0].parse_mode = 'HTML'
-    
+
     return media

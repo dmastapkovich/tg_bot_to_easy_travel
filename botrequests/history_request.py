@@ -1,9 +1,9 @@
 from aiogram import types
 from aiogram.utils.markdown import hlink
 
-from bot_init import dp
-from models.user import User, History
-from utils.botlogging import log_handler
+from bot_init import dp, _
+from models import User, History
+from utils import log_handler
 
 
 @dp.message_handler(commands=['history'])
@@ -17,36 +17,40 @@ async def cmd_history(message: types.Message):
 
 
 async def compose_history(history: History) -> str:
-    info = [f"Время: {history.time_request.strftime('%H:%M %Y-%m-%d')}"]
-    
+    info = [_("Время: {text}").format(text=history.time_request.strftime('%H:%M %Y-%m-%d'))]
+
     req = history.request
     curr = req['currency']
     if req['request'] == '/lowprice':
         info.append(
-            f"Поиск дешевых отелей в городе {req['city']}:"
+            _("Поиск дешевых отелей в городе {text}:").format(text=req['city'])
         )
     elif req['request'] == '/highprice':
         info.append(
-            f"Поиск дорогих отелей в городе {req['city']}:"
+            _("Поиск дорогих отелей в городе {text}:").format(text=req['city'])
         )
     else:
         info.extend([
-            f"Поиск отелей в городе {req['city']}",
-            f"Удаленность до центра города до {req['radius']}",
-            f"Стоимостью от {req['begin_price']} {curr} до {req['end_price']} {curr}"
+            _("Поиск отелей в городе {text}:").format(text=req['city']),
+            _("Удаленность до центра города до {text}:").format(text=req['radius']),
+            _("Стоимостью от {text_1} {curr} до {text_2} {curr}").format(
+                text_1=req['begin_price'],
+                text_2=req['end_price'],
+                curr=curr
+            )
         ])
-        
+
     info.append('Результат поиска:')
-    
+
     hotels: list[dict] = history.result
     for index, hotel in enumerate(hotels, start=1):
         hotel_info = [
-            f"{index}. {hlink(hotel['name'], hotel['url_hotel'])}.",
-            f"Рейтинг {hotel['rating']}.",
-            f"Стоимость {hotel['price']}.",
+            "{index}) {text}.".foramt(index=index, text=hlink(hotel['name'], hotel['url_hotel'])),
+            _("Рейтинг {text}.").format(text=hotel['rating']),
+            _("Стоимость {text}.").format(text=hotel['price']),
         ]
         info.append(
             ' '.join(hotel_info)
         )
-        
+
     return '\n'.join(info)

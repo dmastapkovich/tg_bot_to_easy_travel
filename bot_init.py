@@ -25,12 +25,18 @@ try:
     execut = Executor(dp)
     
     i18n = Localization(config.I18N_DOMAIN, config.LOCALES_DIR)
-    _ = i18n.lazy_gettext
+    # _ = i18n.lazy_gettext
 
-except aiogram.exceptions.BadRequest as error:
+except (aiogram.exceptions.BadRequest, RuntimeError) as error:
     logger.exception(f"[{error.__class__.__name__}] {error}")
     raise SystemExit(error)
 
+def _(text: str):
+    try:
+        return str(i18n.lazy_gettext(text))
+    except Exception as error:
+        logger.exception(f"[{error.__class__.__name__}] {error}")
+        return '[ERROR] Error accessing bot' 
 
 async def middleware_setup(dispatcher: Dispatcher):
     logger.info(

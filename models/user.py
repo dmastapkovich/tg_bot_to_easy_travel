@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.future import select
 from sqlalchemy.orm import relationship
 
-from config import LOCALES, COUNTRY_CURR, SETTINGS_CURR, SETTINGS_LOCALES
+from config import LOCALES, COUNTRY_CURR
 from .database import BaseModel, async_session
 from .history import History
 
@@ -36,14 +36,6 @@ class User(BaseModel):
         else:
             self.currency = value
         await self.commit()
-
-    async def get_settings(self):
-        return '\n'.join([
-            "Ваши текущие настройки:",
-            f"Язык отображения сообщений: *{SETTINGS_LOCALES.get(self.locale)}*",
-            f"Используемая валюта: *{SETTINGS_CURR.get(self.currency)}*",
-            "Выберите опцию настройки:"
-        ])
 
     async def commit(self):
         async with async_session() as session:

@@ -16,7 +16,7 @@ try:
 
     # webhook settings
     WEBHOOK_DOMAIN = env.str(
-        "WEBHOOK_DOMAIN", default='b14d-188-128-56-107.ngrok.io')
+        "WEBHOOK_DOMAIN", default='2eac-188-128-56-107.ngrok.io')
     WEBHOOK_PATH = ''
     WEBHOOK_URL = f"https://{WEBHOOK_DOMAIN}{WEBHOOK_PATH}"
 
