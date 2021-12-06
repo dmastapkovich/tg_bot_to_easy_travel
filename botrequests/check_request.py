@@ -48,7 +48,7 @@ async def get_check_info(call: CallbackQuery, state: FSMContext):
 
                 if photo_urls is None:
                     await call.message.answer(_("Ошибка доступа к фотографиям {text}").format(text=HOTELS_URL))
-                    await call.message.answer(hotel, parse_mode='Markdown', disable_web_page_preview=True)
+                    await call.message.answer(hotel, parse_mode='HTML', disable_web_page_preview=True)
                     continue
 
                 media = await compose_media(photo_urls, hotel_info=hotel)
@@ -58,9 +58,9 @@ async def get_check_info(call: CallbackQuery, state: FSMContext):
                     logger.exception(
                         f"[{error.__class__.__name__} -> {error}] {user}")
                     await call.message.answer(_("Ошибка вывода фотографий."))
-                    await call.message.answer(hotel, parse_mode='Markdown', disable_web_page_preview=True)
+                    await call.message.answer(hotel, parse_mode='HTML', disable_web_page_preview=True)
             else:
-                await call.message.answer(hotel, parse_mode='Markdown', disable_web_page_preview=True)
+                await call.message.answer(hotel, parse_mode='HTML', disable_web_page_preview=True)
 
     await call.message.delete()
     await state.finish()

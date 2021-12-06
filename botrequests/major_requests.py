@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, date, timedelta
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram_calendar import simple_cal_callback, SimpleCalendar
@@ -30,7 +30,7 @@ async def process_simple_calendar(call: types.CallbackQuery, callback_data: dict
     selected, date = await SimpleCalendar().process_selection(call, callback_data)
     if selected:
         async with state.proxy() as data:
-            data['checkIn'] = date
+            data['checkIn'] = date.strftime('%Y-%m-%d')
         await StateBot.SELECT_DATE_OUT.set()
         await call.message.answer(_('Выберите дату выезда:'), reply_markup=await SimpleCalendar().start_calendar())
         await call.message.delete()
@@ -42,49 +42,48 @@ async def process_simple_calendar(call: types.CallbackQuery, callback_data: dict
     selected, date = await SimpleCalendar().process_selection(call, callback_data)
     if selected:
         async with state.proxy() as data:
-            data['checkOut'] = date
-       
-        validate = await validate_date(data['checkIn'], data['checkOut'], state)
-        
-        data = await state.get_data()
-        if not validate:
-            await call.message.answer(_('\n'.join(
-                [
-                    _('Некорректный ввод даты'),
-                    _('Автоматически установлены:'),
-                    _('Дата заезда: {value}').format(value=data['checkIn']),
-                    _('Дата выезда: {value}').format(value=data['checkOut'])
-                ]
-            )))
-        
-        match data['request']:
-            case '/lowprice' | '/highprice':
-                await StateBot.ENTER_COUNT_HOTEL.set()
-                await call.message.answer(_('Введите количество выводимых отелей(до {text}):').format(text=SZ_COUNT_HOTEL))
+            dateIn: datetime = datetime.strptime(data['checkIn'], '%Y-%m-%d')
+            data['checkIn'] = min(dateIn, date).strftime('%Y-%m-%d')
+            data['checkOut'] = max(dateIn, date).strftime('%Y-%m-%d')
 
-            case '/bestdeal':
-                await StateBot.ENTER_PRICE.set()
-                await call.message.answer(_('Введите диапозон цен через - '))
+            today: date = date.today()
+            tomorrow: date = today + timedelta(days=1)
+            validate = await validate_date(data['checkIn'],
+                                           data['checkOut'],
+                                           today=today,
+                                           tomorrow=tomorrow)
 
-        await call.message.delete()
+            if not validate:
+                data['checkIn'] = tomorrow.strftime('%Y-%m-%d')
+                data['checkOut'] = today.strftime('%Y-%m-%d')
+
+                await call.message.answer(_('\n'.join(
+                    [
+                        _('Некорректный ввод даты'),
+                        _('Автоматически установлены:'),
+                        _('Дата заезда: {value}').format(
+                            value=data['checkIn']),
+                        _('Дата выезда: {value}').format(
+                            value=data['checkOut'])
+                    ]
+                )))
+
+            match data['request']:
+                case '/lowprice' | '/highprice':
+                    await StateBot.ENTER_COUNT_HOTEL.set()
+                    await call.message.answer(_('Введите количество выводимых отелей(до {text}):').format(text=SZ_COUNT_HOTEL))
+
+                case '/bestdeal':
+                    await StateBot.ENTER_PRICE.set()
+                    await call.message.answer(_('Введите диапозон цен через - '))
+
+            await call.message.delete()
 
 
-async def validate_date(dateIn, dateOut, state:FSMContext) -> bool:
-    today = datetime.date.today()
-    tomorrow = today + datetime.timedelta(days=1)
-    
-    check = True
-    if today > dateIn:
-        async with state.proxy() as data:
-            data['checkIn'] = today     
-        check = False   
-    
-    if tomorrow > dateOut:
-        async with state.proxy() as data:
-            data['checkOut'] = tomorrow
-        check = False 
-    
-    return check
+async def validate_date(dateIn: str, dateOut: str, today: date, tomorrow: date) -> bool:
+    dateIn = datetime.strptime(dateIn, '%Y-%m-%d').date()
+    dateOut = datetime.strptime(dateOut, '%Y-%m-%d').date()
+    return today < dateIn or tomorrow < dateOut
 
 
 @dp.message_handler(state=StateBot.ENTER_COUNT_HOTEL)

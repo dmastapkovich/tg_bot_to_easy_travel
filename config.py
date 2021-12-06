@@ -12,11 +12,11 @@ try:
     I18N_DOMAIN = "travelbot"
 
     # TOKEN Telegram bot
-    TELEGRAN_TOKEN: str = env.str("TELEGRAN_TOKEN", default='2088846652:AAHZ73ULPkpC3d207mJ-wbTtAQUY6-stK-c')
+    TELEGRAN_TOKEN: str = env.str("TELEGRAN_TOKEN")
 
     # webhook settings
     WEBHOOK_DOMAIN = env.str(
-        "WEBHOOK_DOMAIN", default='2eac-188-128-56-107.ngrok.io')
+        "WEBHOOK_DOMAIN", default='f082-128-69-190-135.ngrok.io')
     WEBHOOK_PATH = ''
     WEBHOOK_URL = f"https://{WEBHOOK_DOMAIN}{WEBHOOK_PATH}"
 
@@ -32,10 +32,13 @@ try:
     # Redis default settings
     REDIS_HOST = env.str("REDIS_HOST", default='localhost')
     REDIS_PORT = env.str("REDIS_PORT", default=6379)
+    
     # Storage for locales of the user
     REDIS_LOCALES_STORAGE = env.str("REDIS_LOCALES_STORAGE", default=0)
+    
     # Storage for locales of the user
     REDIS_CITY_STORAGE = env.str("REDIS_CITY_STORAGE", default=1)
+    
     # Storage for FSM state user
     REDIS_FSM_STORAGE = env.str("REDIS_FSM_STORAGE", default=2)
     REDIS_POOL_SIZE = env.str("REDIS_POOL_SIZE", default=10)
@@ -47,7 +50,7 @@ try:
     
     # Hotels API
     HOTELS_URL = 'hotels4.p.rapidapi.com'
-    HOTELS_TOKEN = env.str("HOTELS_TOKEN", default='8059d8abd1msh7ec858fd45ecf2fp11636fjsn380eb44c4ddc')
+    HOTELS_TOKEN = env.str("HOTELS_TOKEN")
 
     HEADERS_REQUESTS = {
         'x-rapidapi-host': HOTELS_URL,
@@ -89,13 +92,13 @@ SETTINGS_LOCALES: dict = {
     'ru_RU': 'Русский'
 }
 
-INFO_COMMAND = '\n'.join([
-    "List of commands for bot:",
-    "/start - Start bot",
-    "/help - Info about bot and its command",
-    "/lowprice - Search for low price hotels",
-    "/highprice - Search for high price hotels",
-    "/bestdeal - Search hotels by parameters",
-    "/history - Output history",
-    "/settings - User Settings"
-])
+INFO_COMMAND = [
+    "Список команд бота:",
+    "/start - Старт бота",
+    "/help - Информация о командах бота",
+    "/lowprice - Поиск дешевых отелей",
+    "/highprice - Поиск дорогих отелей",
+    "/bestdeal - Поиск отелей по параметрам",
+    "/history - Вывести историю",
+    "/settings - Настройки пользователя"
+]

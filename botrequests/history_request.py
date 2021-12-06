@@ -45,7 +45,7 @@ async def compose_history(history: History) -> str:
     hotels: list[dict] = history.result
     for index, hotel in enumerate(hotels, start=1):
         hotel_info = [
-            "{index}) {text}.".foramt(index=index, text=hlink(hotel['name'], hotel['url_hotel'])),
+            "{index}) {text}.".format(index=index, text=hlink(hotel['name'], hotel['url_hotel'])),
             _("Рейтинг {text}.").format(text=hotel['rating']),
             _("Стоимость {text}.").format(text=hotel['price']),
         ]

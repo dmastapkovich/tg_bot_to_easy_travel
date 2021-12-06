@@ -1,34 +1,38 @@
-#: botrequests/basic_requests.py:44
+#: botrequests/basic_requests.py:48
 msgid "Выберите язык отображения сообщений от бота"
 msgstr ""
 
-#: botrequests/basic_requests.py:48
+#: botrequests/basic_requests.py:52
 msgid "Выберите удобную вам валюту."
 msgstr ""
 
-#: botrequests/basic_requests.py:81
-msgid "Язык"
-msgstr ""
-
-#: botrequests/basic_requests.py:83
-msgid "Валюта"
+#: botrequests/basic_requests.py:84 botrequests/basic_requests.py:93
+msgid "Отменить"
 msgstr ""
 
 #: botrequests/basic_requests.py:90
-msgid "Ваши текущие настройки:"
+msgid "Язык"
 msgstr ""
 
 #: botrequests/basic_requests.py:91
+msgid "Валюта"
+msgstr ""
+
+#: botrequests/basic_requests.py:99
+msgid "Ваши текущие настройки:"
+msgstr ""
+
+#: botrequests/basic_requests.py:100
 #, python-brace-format
 msgid "Язык отображения сообщений: *{text}*"
 msgstr ""
 
-#: botrequests/basic_requests.py:92
+#: botrequests/basic_requests.py:101
 #, python-brace-format
 msgid "Используемая валюта: *{text}*"
 msgstr ""
 
-#: botrequests/basic_requests.py:93
+#: botrequests/basic_requests.py:102
 msgid "Выберите опцию настройки:"
 msgstr ""
 
@@ -36,7 +40,7 @@ msgstr ""
 msgid "Ожидайте. Уже идет поиск отелей..."
 msgstr ""
 
-#: botrequests/check_request.py:26 botrequests/search_city_request.py:26
+#: botrequests/check_request.py:26 botrequests/search_city_request.py:27
 #, python-brace-format
 msgid "Ошибка доступа к {text}"
 msgstr ""
@@ -71,53 +75,81 @@ msgstr ""
 msgid "Поиск отелей."
 msgstr ""
 
-#: botrequests/check_request.py:82
+#: botrequests/check_request.py:82 botrequests/major_requests.py:64
+#, python-brace-format
+msgid "Дата заезда: {value}"
+msgstr ""
+
+#: botrequests/check_request.py:84 botrequests/major_requests.py:65
+#, python-brace-format
+msgid "Дата выезда: {value}"
+msgstr ""
+
+#: botrequests/check_request.py:86
 #, python-brace-format
 msgid "Цена от {value}"
 msgstr ""
 
-#: botrequests/check_request.py:84
+#: botrequests/check_request.py:88
 #, python-brace-format
 msgid "Цена до {value}"
 msgstr ""
 
-#: botrequests/check_request.py:87
+#: botrequests/check_request.py:91
 #, python-brace-format
 msgid "Удаленность от центра до {value} км"
 msgstr ""
 
-#: botrequests/check_request.py:89
+#: botrequests/check_request.py:93
 #, python-brace-format
 msgid "Город: {value}"
 msgstr ""
 
-#: botrequests/check_request.py:92
+#: botrequests/check_request.py:96
 #, python-brace-format
 msgid "Количестов выводимых отелей: {value}"
 msgstr ""
 
-#: botrequests/check_request.py:95
+#: botrequests/check_request.py:99
 #, python-brace-format
 msgid "Количестов выводимых фотографий: {value}"
 msgstr ""
 
-#: botrequests/check_request.py:104
+#: botrequests/check_request.py:107 botrequests/history_request.py:48
+msgid "name"
+msgstr ""
+
+#: botrequests/check_request.py:108
 #, python-brace-format
 msgid "Адрес: {text}"
 msgstr ""
 
-#: botrequests/check_request.py:105
+#: botrequests/check_request.py:109
 #, python-brace-format
 msgid "Рейтинг: {text}"
 msgstr ""
 
-#: botrequests/check_request.py:106
+#: botrequests/check_request.py:110
+#, python-brace-format
+msgid "Дата заезда: {date_in}"
+msgstr ""
+
+#: botrequests/check_request.py:111
+#, python-brace-format
+msgid "Дата выезда: {date_out}"
+msgstr ""
+
+#: botrequests/check_request.py:112
 #, python-brace-format
 msgid "Стоимость: {text}"
 msgstr ""
 
-#: botrequests/check_request.py:107
+#: botrequests/check_request.py:113
 msgid "Удаленность:"
+msgstr ""
+
+#: botrequests/check_request.py:114
+msgid "{distance['label']} - {distance['distance']}"
 msgstr ""
 
 #: botrequests/error_requests.py:16
@@ -131,9 +163,9 @@ msgstr ""
 
 #: botrequests/from_bestdeal_request.py:19
 #: botrequests/from_bestdeal_request.py:44
-#: botrequests/from_bestdeal_request.py:52 botrequests/major_requests.py:33
-#: botrequests/major_requests.py:43 botrequests/major_requests.py:89
-#: botrequests/major_requests.py:99
+#: botrequests/from_bestdeal_request.py:52 botrequests/major_requests.py:98
+#: botrequests/major_requests.py:109 botrequests/major_requests.py:155
+#: botrequests/major_requests.py:166
 msgid "Попробуйте еще раз."
 msgstr ""
 
@@ -142,8 +174,8 @@ msgstr ""
 msgid "Введите удаленность от центра в км(до {text} км)"
 msgstr ""
 
-#: botrequests/from_bestdeal_request.py:43 botrequests/major_requests.py:32
-#: botrequests/major_requests.py:88
+#: botrequests/from_bestdeal_request.py:43 botrequests/major_requests.py:97
+#: botrequests/major_requests.py:154
 #, python-brace-format
 msgid "({text}) - не число."
 msgstr ""
@@ -153,8 +185,7 @@ msgstr ""
 msgid "Максимальная удаленность от центра {text} км."
 msgstr ""
 
-#: botrequests/from_bestdeal_request.py:60
-#: botrequests/search_city_request.py:74
+#: botrequests/from_bestdeal_request.py:60 botrequests/major_requests.py:72
 #, python-brace-format
 msgid "Введите количество выводимых отелей(до {text}):"
 msgstr ""
@@ -193,59 +224,76 @@ msgstr ""
 msgid "Результат поиска:"
 msgstr ""
 
-#: botrequests/history_request.py:50
+#: botrequests/history_request.py:49
 #, python-brace-format
 msgid "Рейтинг {text}."
 msgstr ""
 
-#: botrequests/history_request.py:51
-msgid "Стоимость {}."
+#: botrequests/history_request.py:50
+#, python-brace-format
+msgid "Стоимость {text}."
 msgstr ""
 
-#: botrequests/major_requests.py:21
+#: botrequests/major_requests.py:23
 msgid "Какой город хотите посетить?"
 msgstr ""
 
-#: botrequests/major_requests.py:42
+#: botrequests/major_requests.py:35
+msgid "Выберите дату выезда:"
+msgstr ""
+
+#: botrequests/major_requests.py:62
+msgid "Некорректный ввод даты"
+msgstr ""
+
+#: botrequests/major_requests.py:63
+msgid "Автоматически установлены:"
+msgstr ""
+
+#: botrequests/major_requests.py:76
+msgid "Введите диапозон цен через - "
+msgstr ""
+
+#: botrequests/major_requests.py:107
 #, python-brace-format
 msgid "Можно вывести не больше {text} отелей."
 msgstr ""
 
-#: botrequests/major_requests.py:52
+#: botrequests/major_requests.py:118
 msgid "Выводить фотографии?"
 msgstr ""
 
-#: botrequests/major_requests.py:64 botrequests/major_requests.py:112
+#: botrequests/major_requests.py:130 botrequests/major_requests.py:179
 msgid "Ваш запрос верен?"
 msgstr ""
 
-#: botrequests/major_requests.py:74
+#: botrequests/major_requests.py:140
 #, python-brace-format
 msgid "Введите количество выводимых фотографий(до {text}):"
 msgstr ""
 
-#: botrequests/major_requests.py:98
+#: botrequests/major_requests.py:164
 #, python-brace-format
 msgid "Можно вывести не больше {text} фотографий."
 msgstr ""
 
-#: botrequests/major_requests.py:122
+#: botrequests/major_requests.py:189
 msgid "Да"
 msgstr ""
 
-#: botrequests/major_requests.py:123
+#: botrequests/major_requests.py:190
 msgid "Нет"
 msgstr ""
 
-#: botrequests/search_city_request.py:29
+#: botrequests/search_city_request.py:30
 #, python-brace-format
 msgid "Город '{text}' не найден. Попробуйте сменить локализацию или раскладку."
 msgstr ""
 
-#: botrequests/search_city_request.py:43
-msgid "Выберете город из списка:"
+#: botrequests/search_city_request.py:39 botrequests/search_city_request.py:57
+msgid "Выберите дату заезда:"
 msgstr ""
 
-#: botrequests/search_city_request.py:78
-msgid "Введите диапозон цен через - "
+#: botrequests/search_city_request.py:45
+msgid "Выберете город из списка:"
 msgstr ""
