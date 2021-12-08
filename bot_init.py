@@ -20,7 +20,7 @@ try:
         prefix='FSM_REDIS_STORAGE'
     )
     
-    bot = Bot(config.TELEGRAN_TOKEN)
+    bot = Bot(config.TELEGRAM_TOKEN)
     dp = Dispatcher(bot, storage=fsm_storage)
     execut = Executor(dp)
     

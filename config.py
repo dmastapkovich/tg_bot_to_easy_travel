@@ -12,15 +12,13 @@ try:
     I18N_DOMAIN = "travelbot"
 
     # TOKEN Telegram bot
-    TELEGRAN_TOKEN: str = env.str("TELEGRAN_TOKEN")
+    TELEGRAM_TOKEN: str = env.str("TELEGRAM_TOKEN")
 
-    # webhook settings
+    # # webserver settings
     WEBHOOK_DOMAIN = env.str(
-        "WEBHOOK_DOMAIN", default='f082-128-69-190-135.ngrok.io')
+        "WEBHOOK_DOMAIN", default='f12d-128-69-190-135.ngrok.io')
     WEBHOOK_PATH = ''
     WEBHOOK_URL = f"https://{WEBHOOK_DOMAIN}{WEBHOOK_PATH}"
-
-    # webserver settings
     WEBAPP_HOST = env.str("WEBAPP_HOST", default="localhost")
     WEBAPP_PORT = env.str("WEBAPP_PORT", default="8080")
 

@@ -1,4 +1,4 @@
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram_calendar import simple_cal_callback, SimpleCalendar
@@ -46,7 +46,7 @@ async def process_simple_calendar(call: types.CallbackQuery, callback_data: dict
             data['checkIn'] = min(dateIn, date).strftime('%Y-%m-%d')
             data['checkOut'] = max(dateIn, date).strftime('%Y-%m-%d')
 
-            today: date = date.today()
+            today: date = datetime.today()
             tomorrow: date = today + timedelta(days=1)
             validate = await validate_date(data['checkIn'],
                                            data['checkOut'],
@@ -80,9 +80,9 @@ async def process_simple_calendar(call: types.CallbackQuery, callback_data: dict
             await call.message.delete()
 
 
-async def validate_date(dateIn: str, dateOut: str, today: date, tomorrow: date) -> bool:
-    dateIn = datetime.strptime(dateIn, '%Y-%m-%d').date()
-    dateOut = datetime.strptime(dateOut, '%Y-%m-%d').date()
+async def validate_date(dateIn: str, dateOut: str, today: datetime, tomorrow: datetime) -> bool:
+    dateIn = datetime.strptime(dateIn, '%Y-%m-%d')
+    dateOut = datetime.strptime(dateOut, '%Y-%m-%d')
     return today < dateIn or tomorrow < dateOut
 
 
