@@ -1,3 +1,4 @@
+from datetime import datetime
 from aiogram.types import CallbackQuery, Message
 from aiogram.types.input_media import MediaGroup, InputMediaPhoto
 from aiogram.dispatcher import FSMContext
@@ -79,9 +80,11 @@ async def print_check_request(state: FSMContext) -> str:
                 elif value == '/highprice':
                     info.append(_('Поиск отелей.'))
             case 'checkIn':
-                info.append(_('Дата заезда: {value}').format(value=value))
+                temp_date = datetime.strptime(value, '%Y-%m-%d').strftime('%d.%m.%Y')
+                info.append(_('Дата заезда: {value}').format(value=temp_date))
             case 'checkOut':
-                info.append(_('Дата выезда: {value}').format(value=value))
+                temp_date = datetime.strptime(value, '%Y-%m-%d').strftime('%d.%m.%Y')
+                info.append(_('Дата выезда: {value}').format(value=temp_date))
             case 'begin_price':
                 info.append(_('Цена от {value}').format(value=value))
             case 'end_price':
@@ -103,12 +106,14 @@ async def print_check_request(state: FSMContext) -> str:
 async def compose_info(hotels_result: list, data: dict) -> dict[int, list]:
     info = {}
     for hotel in hotels_result:
+        checkIn = datetime.strptime(data['checkIn'], '%Y-%m-%d').strftime('%d.%m.%Y')
+        checkOut = datetime.strptime(data['checkOut'], '%Y-%m-%d').strftime('%d.%m.%Y')
         info[hotel['id_hotel']] = "\n".join([
             hlink(hotel['name'], hotel['url_hotel']),
             _("Адрес: {text}").format(text=hotel['addres']),
             _("Рейтинг: {text}").format(text=hotel['rating']),
-            _("Дата заезда: {date_in}").format(date_in=data['checkIn']),
-            _("Дата выезда: {date_out}").format(date_out=data['checkOut']),
+            _("Дата заезда: {date_in}").format(date_in=checkIn),
+            _("Дата выезда: {date_out}").format(date_out=checkOut),
             _("Стоимость: {text}").format(text=hotel['price']),
             _("Удаленность:"),
             *[f"{distance['label']} - {distance['distance']}" for distance in hotel['location']]

@@ -99,7 +99,7 @@ async def enter_count_hotel(message: types.Message, state: FSMContext):
             )
         )
 
-    if int(message.text) > SZ_COUNT_HOTEL:
+    if int(message.text) > SZ_COUNT_HOTEL or int(message.text) <= 0:
         return await message.answer(
             '\n'.join(
                 [
@@ -132,7 +132,6 @@ async def select_photo(call: types.CallbackQuery, state: FSMContext):
             ),
             reply_markup=get_yes_no_button()
         )
-
     else:
         await StateBot.next()
         await call.message.answer(
@@ -155,8 +154,7 @@ async def enter_count_photo(message: types.Message, state: FSMContext):
                 ]
             )
         )
-
-    if int(message.text) > SZ_COUNT_PHOTO:
+    if int(message.text) > SZ_COUNT_PHOTO or int(message.text) <= 0:
         return await message.answer(
             '\n'.join(
                 [

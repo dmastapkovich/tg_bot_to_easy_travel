@@ -8,7 +8,7 @@ from loguru import logger
 
 import config
 from models.database import db_setup
-from utils import logging_setup
+from utils import logging_setup, redis_setup
 from utils.bot_i18n import Localization
 
 try:
@@ -19,24 +19,26 @@ try:
         pool_size=config.REDIS_POOL_SIZE,
         prefix='FSM_REDIS_STORAGE'
     )
-    
+
     bot = Bot(config.TELEGRAM_TOKEN)
     dp = Dispatcher(bot, storage=fsm_storage)
     execut = Executor(dp)
-    
+
     i18n = Localization(config.I18N_DOMAIN, config.LOCALES_DIR)
     # _ = i18n.lazy_gettext
 
 except (aiogram.exceptions.BadRequest, RuntimeError) as error:
     logger.exception(f"[{error.__class__.__name__}] {error}")
-    raise SystemExit(error)
+    raise SystemExit(f"[{error.__class__.__name__} -> {__name__}] {error}")
+
 
 def _(text: str):
     try:
         return str(i18n.lazy_gettext(text))
     except Exception as error:
         logger.exception(f"[{error.__class__.__name__}] {error}")
-        return '[ERROR] Error accessing bot' 
+        return '[ERROR] Error accessing bot'
+
 
 async def middleware_setup(dispatcher: Dispatcher):
     logger.info(
@@ -62,14 +64,17 @@ async def shutdown(dispatcher: Dispatcher):
 
 def setup():
     logger.info("Setup basic settings")
-    execut.on_startup([logging_setup, db_setup, middleware_setup, start_bot],
+    execut.on_startup([logging_setup, db_setup, middleware_setup, redis_setup, start_bot],
                       webhook=True, polling=False)
     execut.on_shutdown(shutdown)
 
 
 @logger.catch
 def run():
-    setup()
-    execut.start_webhook(webhook_path=config.WEBHOOK_PATH,
-                         host=config.WEBAPP_HOST,
-                         port=config.WEBAPP_PORT)
+    try:
+        setup()
+        execut.start_webhook(webhook_path=config.WEBHOOK_PATH,
+                             host=config.WEBAPP_HOST,
+                             port=config.WEBAPP_PORT)
+    except SystemExit as error:
+        logger.exception(error)
