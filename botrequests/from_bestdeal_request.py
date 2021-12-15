@@ -1,40 +1,60 @@
 from aiogram import types
+from aiogram.dispatcher import FSMContext
 
-from bot_init import dp
-from utils.botlogging import log_handler
-from models.user import User
+from bot_init import dp, _
 from config import SZ_RADIUS, SZ_COUNT_HOTEL
+from utils import StateBot, log_handler
 
 
-@dp.message_handler(lambda message: User.from_message(message).next_hop == 'ENTER_PRICE')
+@dp.message_handler(state=StateBot.ENTER_PRICE)
 @log_handler
-async def enter_price(message: types.Message):
+async def enter_price(message: types.Message, state: FSMContext):
     temp = message.text.split('-')
 
     if len(temp) != 2 and all(value.strip().isdigit() for value in temp):
-        return await message.answer('Некорректный ввод диапозона цен.\nПопробуйте еще раз.')
-
-    user = User.from_message(message)
+        return await message.answer(
+            '\n'.join(
+                [
+                    _('Некорректный ввод диапозона цен.'),
+                    _('Попробуйте еще раз.')
+                ]
+            )
+        )
 
     begin_price, end_price = int(temp[0].strip()), int(temp[1].strip())
-    user.set_item_dialog('begin_price', min(begin_price, end_price))
-    user.set_item_dialog('end_price', max(begin_price, end_price))
-    user.next_hop = 'ENTER_RADIUS'
-    await message.answer(f'Введите удаленность от центра в км(до {SZ_RADIUS} км)')
+
+    async with state.proxy() as data:
+        data['begin_price'] = min(begin_price, end_price)
+        data['end_price'] = max(begin_price, end_price)
+
+    await StateBot.next()
+    await message.answer(_('Введите удаленность от центра в км(до {text} км)').format(text=SZ_RADIUS))
 
 
-@dp.message_handler(lambda message: User.from_message(message).next_hop == 'ENTER_RADIUS')
+@dp.message_handler(state=StateBot.ENTER_RADIUS)
 @log_handler
-async def enter_radius(message: types.Message):
+async def enter_radius(message: types.Message, state: FSMContext):
+    radius = message.text
+    if ',' in radius:
+        radius = radius.replace(',', '.', 1)
+    if not radius.replace('.', '', 1).isdigit():
+        return await message.answer(
+            '\n'.join([
+                _('({text}) - не число.').format(text=radius),
+                _('Попробуйте еще раз.')
+            ])
+        )
 
-    if not message.text.isdigit():
-        return await message.answer(f'({message.text}) - не число.\nПопробуйте еще раз.')
+    if float(radius) > SZ_RADIUS:
+        return await message.answer(
+            '\n'.join([
+                _('Максимальная удаленность от центра {text} км.').format(text=SZ_RADIUS),
+                _('Попробуйте еще раз.')
+            ])
+        )
 
-    if float(message.text) > SZ_RADIUS:
-        return await message.answer(f'Максимальная удаленность от центра {SZ_RADIUS} км.\nПопробуйте еще раз.')
+    async with state.proxy() as data:
+        data['radius'] = float(radius)
 
-    user = User.from_message(message)
-    user.set_item_dialog('radius', float(message.text))
-
-    user.next_hop = 'ENTER_COUNT_HOTEL'
-    await message.answer(f'Введите количество выводимых отелей(до {SZ_COUNT_HOTEL}):')
+    await StateBot.next()
+    await message.answer(_('Введите количество выводимых отелей(до {text}):').format(text=SZ_COUNT_HOTEL))

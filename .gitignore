@@ -46,7 +46,6 @@ logs/
 
 *.bak
 # temporarily 
-locales/
 
 *.db
 

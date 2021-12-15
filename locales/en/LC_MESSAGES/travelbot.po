@@ -1,0 +1,346 @@
+# English translations for PROJECT.
+# Copyright (C) 2021 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2021-12-07 21:22+0300\n"
+"PO-Revision-Date: 2021-12-05 23:01+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: botrequests/basic_requests.py:48
+msgid "Выберите язык отображения сообщений от бота"
+msgstr "Select the language for displaying messages from the bot"
+
+#: botrequests/basic_requests.py:52
+msgid "Выберите удобную вам валюту."
+msgstr "Choose your preferred currency."
+
+#: botrequests/basic_requests.py:84 botrequests/basic_requests.py:93
+msgid "Отменить"
+msgstr "Cancel"
+
+#: botrequests/basic_requests.py:90
+msgid "Язык"
+msgstr "Language"
+
+#: botrequests/basic_requests.py:91
+msgid "Валюта"
+msgstr "Currency"
+
+#: botrequests/basic_requests.py:99
+msgid "Ваши текущие настройки:"
+msgstr "Your current settings are:"
+
+#: botrequests/basic_requests.py:100
+#, python-brace-format
+msgid "Язык отображения сообщений: *{text}*"
+msgstr "Message display language: *{text}*"
+
+#: botrequests/basic_requests.py:101
+#, python-brace-format
+msgid "Используемая валюта: *{text}*"
+msgstr "Used currency: *{text}*"
+
+#: botrequests/basic_requests.py:102
+msgid "Выберите опцию настройки:"
+msgstr "Select a customization option:"
+
+#: botrequests/check_request.py:22
+msgid "Ожидайте. Уже идет поиск отелей..."
+msgstr "Wait. Searching for hotels already..."
+
+#: botrequests/check_request.py:26 botrequests/search_city_request.py:27
+#, python-brace-format
+msgid "Ошибка доступа к {text}"
+msgstr "Error accessing {text}"
+
+#: botrequests/check_request.py:32
+msgid "К сожалению, Мы не смогли найти для Вас отели по вашему запросу."
+msgstr "Unfortunately, we could not find any hotels for you according to your request."
+
+#: botrequests/check_request.py:38
+#, python-brace-format
+msgid "По вашему запросу было найдено только {text} отеля."
+msgstr "Only {text} hotel was found for your request."
+
+#: botrequests/check_request.py:50
+#, python-brace-format
+msgid "Ошибка доступа к фотографиям {text}"
+msgstr "Error accessing photos {text}"
+
+#: botrequests/check_request.py:60
+msgid "Ошибка вывода фотографий."
+msgstr "Error displaying photos."
+
+#: botrequests/check_request.py:76
+msgid "Поиск дешевых отелей."
+msgstr "Search for cheap hotels."
+
+#: botrequests/check_request.py:78
+msgid "Поиск дорогих отелей."
+msgstr "Search for luxury hotels."
+
+#: botrequests/check_request.py:80
+msgid "Поиск отелей."
+msgstr "Hotel search."
+
+#: botrequests/check_request.py:82 botrequests/major_requests.py:64
+msgid "Дата заезда: {value}"
+msgstr "Arrival date: {value}"
+
+#: botrequests/check_request.py:84 botrequests/major_requests.py:65
+msgid "Дата выезда: {value}"
+msgstr "Date of departure:  {value}"
+
+#: botrequests/check_request.py:86
+#, python-brace-format
+msgid "Цена от {value}"
+msgstr "Price from {value}"
+
+#: botrequests/check_request.py:88
+#, python-brace-format
+msgid "Цена до {value}"
+msgstr "Price before {value}"
+
+#: botrequests/check_request.py:91
+#, python-brace-format
+msgid "Удаленность от центра до {value} км"
+msgstr "Distance from the center to {value} m"
+
+#: botrequests/check_request.py:93
+#, python-brace-format
+msgid "Город: {value}"
+msgstr "City: {value}"
+
+#: botrequests/check_request.py:96
+#, python-brace-format
+msgid "Количестов выводимых отелей: {value}"
+msgstr "Number of displayed hotels: {value}"
+
+#: botrequests/check_request.py:99
+#, python-brace-format
+msgid "Количестов выводимых фотографий: {value}"
+msgstr "Number of displayed photos: {value}"
+
+
+#: botrequests/check_request.py:108
+#, python-brace-format
+msgid "Адрес: {text}"
+msgstr "Address: {text}"
+
+#: botrequests/check_request.py:109
+#, python-brace-format
+msgid "Рейтинг: {text}"
+msgstr "Rating: {text}"
+
+#: botrequests/check_request.py:110
+#, python-brace-format
+msgid "Дата заезда: {date_in}"
+msgstr "Arrival date: {date_in}"
+
+#: botrequests/check_request.py:111
+#, python-brace-format
+msgid "Дата выезда: {date_out}"
+msgstr "Date of departure: {date_out}"
+
+#: botrequests/check_request.py:112
+#, python-brace-format
+msgid "Стоимость: {text}"
+msgstr "Cost: {text}"
+
+#: botrequests/check_request.py:113
+msgid "Удаленность:"
+msgstr "Distance:"
+
+#: botrequests/error_requests.py:16
+#, python-brace-format
+msgid "Такой команды [{text}] нет в списке."
+msgstr "This command [{text}] is not in the list."
+
+#: botrequests/from_bestdeal_request.py:18
+msgid "Некорректный ввод диапозона цен."
+msgstr "Incorrect entry of the price range."
+
+#: botrequests/from_bestdeal_request.py:19
+#: botrequests/from_bestdeal_request.py:44
+#: botrequests/from_bestdeal_request.py:52 botrequests/major_requests.py:98
+#: botrequests/major_requests.py:109 botrequests/major_requests.py:155
+#: botrequests/major_requests.py:166
+msgid "Попробуйте еще раз."
+msgstr "Please try again."
+
+#: botrequests/from_bestdeal_request.py:31
+#, python-brace-format
+msgid "Введите удаленность от центра в км(до {text} км)"
+msgstr "Enter the distance from the center in km (up to {text} km)"
+
+#: botrequests/from_bestdeal_request.py:43 botrequests/major_requests.py:97
+#: botrequests/major_requests.py:154
+#, python-brace-format
+msgid "({text}) - не число."
+msgstr "({text}) is not a number."
+
+#: botrequests/from_bestdeal_request.py:51
+#, python-brace-format
+msgid "Максимальная удаленность от центра {text} км."
+msgstr "Maximum distance from the center {text} m."
+
+#: botrequests/from_bestdeal_request.py:60 botrequests/major_requests.py:72
+#, python-brace-format
+msgid "Введите количество выводимых отелей(до {text}):"
+msgstr "Enter the number of displayed hotels (up to {text}):"
+
+#: botrequests/history_request.py:20
+#, python-brace-format
+msgid "Время: {text}"
+msgstr "Time: {text}"
+
+#: botrequests/history_request.py:26
+#, python-brace-format
+msgid "Поиск дешевых отелей в городе {text}:"
+msgstr "Search for cheap hotels in the city {text}:"
+
+#: botrequests/history_request.py:30
+#, python-brace-format
+msgid "Поиск дорогих отелей в городе {text}:"
+msgstr "Search for luxury hotels in the city {text}:"
+
+#: botrequests/history_request.py:34
+#, python-brace-format
+msgid "Поиск отелей в городе {text}:"
+msgstr "Search hotels in city {text}:"
+
+#: botrequests/history_request.py:35
+#, python-brace-format
+msgid "Удаленность до центра города до {text}:"
+msgstr "Distance to city center to {text}:"
+
+#: botrequests/history_request.py:36
+#, python-brace-format
+msgid "Стоимостью от {text_1} {curr} до {text_2} {curr}"
+msgstr "Cost from {text_1} {curr} to {text_2} {curr}"
+
+#: botrequests/history_request.py:43
+msgid "Результат поиска:"
+msgstr "Search result:"
+
+#: botrequests/history_request.py:49
+#, python-brace-format
+msgid "Рейтинг {text}."
+msgstr "Rating {text}."
+
+#: botrequests/history_request.py:50
+#, python-brace-format
+msgid "Стоимость {text}."
+msgstr "Cost {text}."
+
+#: botrequests/major_requests.py:23
+msgid "Какой город хотите посетить?"
+msgstr "Which city do you want to visit?"
+
+#: botrequests/major_requests.py:35
+msgid "Выберите дату выезда:"
+msgstr "Select the date of departure: "
+
+#: botrequests/major_requests.py:62
+msgid "Некорректный ввод даты"
+msgstr "Incorrect input date"
+
+#: botrequests/major_requests.py:63
+msgid "Автоматически установлены:"
+msgstr "Automatically installed: "
+
+#: botrequests/major_requests.py:76
+msgid "Введите диапозон цен через - "
+msgstr "Enter price range with - "
+
+#: botrequests/major_requests.py:107
+#, python-brace-format
+msgid "Можно вывести не больше {text} отелей."
+msgstr "You can display no more than {text} hotels."
+
+#: botrequests/major_requests.py:118
+msgid "Выводить фотографии?"
+msgstr "Display photos?"
+
+#: botrequests/major_requests.py:130 botrequests/major_requests.py:179
+msgid "Ваш запрос верен?"
+msgstr "Is your request correct?"
+
+#: botrequests/major_requests.py:140
+#, python-brace-format
+msgid "Введите количество выводимых фотографий(до {text}):"
+msgstr "Enter the number of displayed photos (up to {text}):"
+
+#: botrequests/major_requests.py:164
+#, python-brace-format
+msgid "Можно вывести не больше {text} фотографий."
+msgstr "You can display no more than {text} photos."
+
+#: botrequests/major_requests.py:189
+msgid "Да"
+msgstr "Yes"
+
+#: botrequests/major_requests.py:190
+msgid "Нет"
+msgstr "No"
+
+#: botrequests/search_city_request.py:30
+#, python-brace-format
+msgid "Город '{text}' не найден. Попробуйте сменить локализацию или раскладку."
+msgstr "City '{text}' not found. Please try changing the localization or layout."
+
+#: botrequests/search_city_request.py:39 botrequests/search_city_request.py:57
+msgid "Выберите дату заезда:"
+msgstr "Select the date of arrival: "
+
+#: botrequests/search_city_request.py:45
+msgid "Выберете город из списка:"
+msgstr "Select a city from the list:"
+
+msgid "Список команд бота:"
+msgstr "List of commands for bot:"
+
+msgid "/start - Старт бота"
+msgstr "/start - Start bot"
+
+msgid "/help - Информация о командах бота"
+msgstr "/help - Info about bot and its command"
+
+msgid "/lowprice - Поиск дешевых отелей"
+msgstr "/lowprice - Search for low price hotels"
+
+msgid "/bestdeal - Поиск отелей по параметрам"
+msgstr "/bestdeal - Search hotels by parameters"
+
+msgid "/highprice - Поиск дорогих отелей"
+msgstr "/highprice - Search for high price hotels"
+
+msgid "/history - Вывести историю"
+msgstr "/history - Output history"
+
+msgid "/settings - Настройки пользователя"
+msgstr "/settings - User Settings"
+
+
+
+
+
+
+
+
+
+
+
+

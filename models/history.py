@@ -3,11 +3,9 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, JSON, DateTime
 from sqlalchemy.sql.schema import ForeignKey
 
-from .database import BaseModel
-
+from .database import BaseModel, async_session
 
 class History(BaseModel):
-
     __tablename__ = 'history'
 
     id_history = Column(Integer, primary_key=True,
@@ -16,6 +14,8 @@ class History(BaseModel):
     request = Column(JSON, default={}, nullable=False)
     result = Column(JSON, default={})
     id_user = Column(Integer, ForeignKey('users.id_user'))
-    
-    def __repr__(self):
-        return f"<History(id_history='{self.id_history}',\nrequest='{self.request}', result='{self.result}')>"
+
+    async def commit(self):
+        async with async_session() as session:
+            session.add(self)
+            await session.commit()
