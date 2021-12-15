@@ -33,20 +33,20 @@ async def compose_history(history: History) -> str:
         info.extend([
             _("Поиск отелей в городе {text}:").format(text=req['city']),
             _("Удаленность до центра города до {text}:").format(text=req['radius']),
-            _("Стоимостью от {text_1} {curr} до {text_2} {curr}").format(
+            _("Стоимостью за сутки от {text_1} {curr} до {text_2} {curr}").format(
                 text_1=req['begin_price'],
                 text_2=req['end_price'],
                 curr=curr
             )
         ])
 
-    info.append('Результат поиска:')
+    info.append(_('Результат поиска:'))
 
     hotels: list[dict] = history.result
     for index, hotel in enumerate(hotels, start=1):
         hotel_info = [
             "{index}) {text}.".format(index=index, text=hlink(hotel['name'], hotel['url_hotel'])),
-            _("Рейтинг {text}.").format(text=hotel['rating']),
+            # _("Рейтинг {text}.").format(text=hotel['rating']),
             _("Стоимость {text}.").format(text=hotel['price']),
         ]
         info.append(
