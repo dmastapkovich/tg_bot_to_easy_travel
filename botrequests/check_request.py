@@ -7,7 +7,7 @@ from aiogram.utils.exceptions import BadRequest
 from loguru import logger
 
 from bot_init import dp, _
-from config import HOTELS_URL
+from config import HOTELS_URL, SETTINGS_CURR
 from hotelsrequests import get_hotels, get_photo_urls
 from models import User
 from utils import StateBot, log_handler
@@ -86,9 +86,9 @@ async def print_check_request(state: FSMContext, curr:str) -> str:
                 temp_date = datetime.strptime(value, '%Y-%m-%d').strftime('%d.%m.%Y')
                 info.append(_('Дата выезда: {value}').format(value=temp_date))
             case 'begin_price':
-                info.append(_('Цена за сутки от {value}').format(value=f'{value} {curr}'))
+                info.append(_('Цена за сутки от {value}').format(value=f'{value} {SETTINGS_CURR[curr]}'))
             case 'end_price':
-                info.append(_('Цена за сутки до {value}').format(value=f'{value} {curr}'))
+                info.append(_('Цена за сутки до {value}').format(value=f'{value} {SETTINGS_CURR[curr]}'))
             case 'radius':
                 info.append(
                     _('Удаленность от центра до {value} км').format(value=value))

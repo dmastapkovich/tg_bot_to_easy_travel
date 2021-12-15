@@ -66,7 +66,7 @@ try:
     SZ_RADIUS = 5
 
 except ConfigurationError as error:
-    logger.exception(f"[{error.__class__.__name__}] {error}")
+    logger.error(f"[{error.__class__.__name__}] {error}")
     raise SystemExit(error)
 
 COUNTRY_CURR: dict = {
