@@ -105,13 +105,13 @@ msgstr "Date of departure:  {value}"
 
 #: botrequests/check_request.py:86
 #, python-brace-format
-msgid "Цена от {value}"
-msgstr "Price from {value}"
+msgid "Цена за сутки от {value}"
+msgstr "Price per day from {value}"
 
 #: botrequests/check_request.py:88
 #, python-brace-format
-msgid "Цена до {value}"
-msgstr "Price before {value}"
+msgid "Цена за сутки до {value}"
+msgstr "Price per day before {value}"
 
 #: botrequests/check_request.py:91
 #, python-brace-format
@@ -228,8 +228,8 @@ msgstr "Distance to city center to {text}:"
 
 #: botrequests/history_request.py:36
 #, python-brace-format
-msgid "Стоимостью от {text_1} {curr} до {text_2} {curr}"
-msgstr "Cost from {text_1} {curr} to {text_2} {curr}"
+msgid "Стоимостью за сутки от {text_1} {curr} до {text_2} {curr}"
+msgstr "Cost per day from {text_1} {curr} to {text_2} {curr}"
 
 #: botrequests/history_request.py:43
 msgid "Результат поиска:"
@@ -262,8 +262,8 @@ msgid "Автоматически установлены:"
 msgstr "Automatically installed: "
 
 #: botrequests/major_requests.py:76
-msgid "Введите диапозон цен через - "
-msgstr "Enter price range with - "
+msgid "Введите диапозон цен за сутки через - "
+msgstr "Enter price range per day with - "
 
 #: botrequests/major_requests.py:107
 #, python-brace-format

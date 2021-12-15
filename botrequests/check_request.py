@@ -67,7 +67,7 @@ async def get_check_info(call: CallbackQuery, state: FSMContext):
     await state.finish()
 
 
-async def print_check_request(state: FSMContext) -> str:
+async def print_check_request(state: FSMContext, curr:str) -> str:
     info = []
     data = await state.get_data()
     for key, value in data.items():
@@ -86,9 +86,9 @@ async def print_check_request(state: FSMContext) -> str:
                 temp_date = datetime.strptime(value, '%Y-%m-%d').strftime('%d.%m.%Y')
                 info.append(_('Дата выезда: {value}').format(value=temp_date))
             case 'begin_price':
-                info.append(_('Цена от {value}').format(value=value))
+                info.append(_('Цена за сутки от {value}').format(value=f'{value} {curr}'))
             case 'end_price':
-                info.append(_('Цена до {value}').format(value=value))
+                info.append(_('Цена за сутки до {value}').format(value=f'{value} {curr}'))
             case 'radius':
                 info.append(
                     _('Удаленность от центра до {value} км').format(value=value))
@@ -111,7 +111,7 @@ async def compose_info(hotels_result: list, data: dict) -> dict[int, list]:
         info[hotel['id_hotel']] = "\n".join([
             hlink(hotel['name'], hotel['url_hotel']),
             _("Адрес: {text}").format(text=hotel['addres']),
-            _("Рейтинг: {text}").format(text=hotel['rating']),
+            # _("Рейтинг: {text}").format(text=hotel['rating']),
             _("Дата заезда: {date_in}").format(date_in=checkIn),
             _("Дата выезда: {date_out}").format(date_out=checkOut),
             _("Стоимость: {text}").format(text=hotel['price']),

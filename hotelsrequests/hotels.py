@@ -30,7 +30,7 @@ async def get_hotels(user_dialog: dict) -> list[dict]:
     result = await search_hotel(params)
 
     if user_request == '/bestdeal':
-        result = await filter_bestdeal(result, user_dialog['radius'])
+        result = await filter_bestdeal(result, user_dialog['radius'], user_dialog['count_hotel'])
 
     return result
 
@@ -48,15 +48,15 @@ async def search_hotel(params: dict) -> list[dict]:
         'id_hotel': hotel['id'],
         'url_hotel': HOTEL_URL_FORMAT.format(hotel_id=hotel['id']),
         'name': hotel['name'],
-        'addres': hotel['address']['streetAddress'],
-        'rating': hotel['starRating'],
+        'addres': hotel['address'].get('streetAddress', hotel['name']),
+        # 'rating': hotel['starRating'],
         'price': hotel['ratePlan']['price']['current'],
         'location': hotel['landmarks']
     } for hotel in result]
 
 
 @logger.catch
-async def filter_bestdeal(hotels: list[dict], radius: int) -> list[dict]:
+async def filter_bestdeal(hotels: list[dict], radius: int, count_hotel:int) -> list[dict]:
     result = []
 
     for hotel in hotels:
@@ -68,7 +68,7 @@ async def filter_bestdeal(hotels: list[dict], radius: int) -> list[dict]:
         if radius > float(hotel_dist):
             result.append(hotel)
 
-    if len(result) > 5:
-        result = result[:5]
+    if len(result) > count_hotel:
+        result = result[:count_hotel]
 
     return result

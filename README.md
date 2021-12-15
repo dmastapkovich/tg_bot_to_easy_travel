@@ -11,7 +11,7 @@
 </div>
 
 
-TO EASY TRAVEL is a simple telegram bot, implemented in the framework of the graduation work `Python Basic` from `SkillBox`..
+TO EASY TRAVEL is a simple telegram bot, implemented in the framework of the graduation work `Python Basic` from `SkillBox`.
 
 It helps the user find a hotel in any city by the desired parameters. 
 
@@ -26,6 +26,7 @@ You can test work on [the link](https://t.me/Travel_7fad6f9f_bot).
 mkdir -p $PYTHONPATH/to_easy_travel_bot
 cd $PYTHONPATH/to_easy_travel_bot
 git clone https://gitlab.skillbox.ru/dmitrii_astapkovich/python_basic_diploma.git
+cd python_basic_diploma
 source $YOUR_PYTHON_ENV/bin/activate
 pip install -r requirements.txt
 ```
@@ -53,7 +54,7 @@ Bots also need Redis storage. It is used to store the user's **internationalizat
     # Storage for locales of the user
     REDIS_CITY_STORAGE = 1
     # Storage for FSM state user
-    REDIS_FSM_STORAGE = =2
+    REDIS_FSM_STORAGE = 2
     REDIS_POOL_SIZE = 10
 ```
 

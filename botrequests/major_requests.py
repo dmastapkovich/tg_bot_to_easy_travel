@@ -75,7 +75,7 @@ async def process_simple_calendar(call: types.CallbackQuery, callback_data: dict
 
                 case '/bestdeal':
                     await StateBot.ENTER_PRICE.set()
-                    await call.message.answer(_('Введите диапозон цен через - '))
+                    await call.message.answer(_('Введите диапозон цен за сутки через - '))
 
             await call.message.delete()
 
@@ -122,7 +122,8 @@ async def enter_count_hotel(message: types.Message, state: FSMContext):
 async def select_photo(call: types.CallbackQuery, state: FSMContext):
     if call.data == 'no':
         await StateBot.CHECK_REQUEST.set()
-        info_request = await print_check_request(state)
+        user = await User.from_message(call)
+        info_request = await print_check_request(state, user.currency)
         await call.message.answer(
             '\n'.join(
                 [
@@ -169,7 +170,8 @@ async def enter_count_photo(message: types.Message, state: FSMContext):
         data['count_photo'] = int(message.text)
 
     await StateBot.next()
-    info_request = await print_check_request(state)
+    user = await User.from_message(message)
+    info_request = await print_check_request(state, user.currency)
     await message.answer(
         '\n'.join(
             [
