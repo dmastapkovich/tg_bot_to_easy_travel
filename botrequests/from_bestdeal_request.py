@@ -11,7 +11,7 @@ from utils import StateBot, log_handler
 async def enter_price(message: types.Message, state: FSMContext):
     temp = message.text.split('-')
 
-    if len(temp) != 2 and all(value.strip().isdigit() for value in temp):
+    if len(temp) != 2 or not all(value.strip().isdigit() for value in temp):
         return await message.answer(
             '\n'.join(
                 [
