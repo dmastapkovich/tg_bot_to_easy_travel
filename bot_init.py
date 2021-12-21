@@ -25,7 +25,6 @@ try:
     execut = Executor(dp)
 
     i18n = Localization(config.I18N_DOMAIN, config.LOCALES_DIR)
-    # _ = i18n.lazy_gettext
 
 except (aiogram.exceptions.BadRequest, RuntimeError) as error:
     logger.exception(f"[{error.__class__.__name__}] {error}")
