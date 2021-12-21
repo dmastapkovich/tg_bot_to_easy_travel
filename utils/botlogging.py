@@ -14,7 +14,7 @@ T = TypeVar('T')
 
 
 async def logging_setup(dispatcher: Dispatcher):
-    logger.add(LOGGER_FILE, level="DEBUG", rotation="5 MB")
+    logger.add(LOGGER_FILE, level="DEBUG", rotation="5 MB", enqueue=True, backtrace=True, diagnose=True)
     logger.info(f"Setup loguru in: {LOGGER_FILE}")
 
 
