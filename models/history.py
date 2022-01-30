@@ -2,12 +2,10 @@ from datetime import datetime
 
 from sqlalchemy import Column, Integer, JSON, DateTime
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy.future import select
 
 from .database import BaseModel, async_session
 
 class History(BaseModel):
-
     __tablename__ = 'history'
 
     id_history = Column(Integer, primary_key=True,
@@ -21,6 +19,3 @@ class History(BaseModel):
         async with async_session() as session:
             session.add(self)
             await session.commit()
-            
-    def __repr__(self) -> str:
-        return f"{self.id_history}"

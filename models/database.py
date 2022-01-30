@@ -1,9 +1,9 @@
 import os
 
 from aiogram import Dispatcher
+from loguru import logger
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import declarative_base, sessionmaker
-from loguru import logger
 
 from config import DATABASE_URL_DRIVER, DATABASE_URL_FILE
 
@@ -17,8 +17,7 @@ class BaseModel(Base):
     __abstract__ = True
 
 
-async def setup_db(dispatcher: Dispatcher):
-
+async def db_setup(dispatcher: Dispatcher):
     from .history import History
     from .user import User
 
